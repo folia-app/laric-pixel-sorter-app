@@ -15,6 +15,7 @@
         .absolute.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-white.min-h-screen(:class="[panelWidths[1], {'scale-x-0': !panelOpen}]")
           //- panels
           transition-group(name="pagesfade", @before-enter="setPanelWidths")            
+            info(v-show="$route.name === 'info'", key="info")
             filters(v-show="$route.name === 'filter'", key="filter")
             //- set-view(v-if="$route.name === 'set'", key="set")
             shred(v-if="$route.name === 'shred'", key="shred")
@@ -27,40 +28,46 @@
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
         //- HEADER
-        header.sticky.top-0.left-0.w-full.z-20.text-white.pointer-events-none(style="mix-blend-mode:difference")
-          .absolute.top-0.left-0.w-full
+        header.sticky.h-14.bg-gray-200.top-0.left-0.w-full.z-20.text-white.pointer-events-none.flex.text-black.text-smm(style="mix-blend-modeff:difference")
+          //- .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
-              //- logo
-              .p-10.md_px-12.pointer-events-auto
-                div NFT #[span.line-through Shredder]
-                //- button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
-                  logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
-                //- svg-fleuron.block.text-white(style="height:3rem")
-                
-              .p-10.md_px-12.pointer-events-auto
-                router-link(to="/filter") Filter
-              //- connect
-              //- div.pointer-events-auto
-                button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
-                button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
-                  span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
-                  span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
+          
+          //- logo
+          .flex-1.px-10.flex.items-center.md_px-12.pointer-events-auto
+            div #[span.line-through NFT] Shredder
+            //- button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
+              logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
+            //- svg-fleuron.block.text-white(style="height:3rem")
+            
+          router-link(to="/info").w-1x5.px-10.md_px-12.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.hover_bg-gray-400.transition.duration-500
+            | Info
+
+          router-link(to="/filter").w-1x5.px-10.md_px-12.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-400.transition.duration-500
+            | Filter
+            
+
+            //- connect
+            //- div.pointer-events-auto
+              button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
+              button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
+                span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
+                span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
 
         //- token grid
         .grid.grid-cols-5
           template(v-for="n in 100")
             //- thumbs...
-            router-link.block(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
+            router-link.block.hover_bg-gray-300.transition.duration-1000(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
               .pb-full
 
         //- credits
         .bg-gray-200
-          .w-3x5.text-sm.h-24.flex.items-center.px-12.opacity-25 2022...
+          .w-3x5.text-sm.h-24.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
 
         .sticky.bottom-0.left-0.w-full
           .absolute.bottom-0.left-0.w-full.h-24.flex.justify-end
             router-link.w-2x5.flex.items-center.justify-center.bg-gray-300.relative(to="/shred")
-              div.text-sm Shred Your NFT ꩜
+              div.text-sm Shred your NFTs ꩜
               .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
         
 
@@ -73,12 +80,13 @@
 import { mapState, mapGetters } from 'vuex'
 import Logo from '@/components/Logo'
 import svgFleuron from '@/components/SVG-Fleuron'
-import Info from '@/components/Info'
+// import Info from '@/components/Info'
 // import WorkThumb from '@/components/WorkThumb'
 import Btn from '@/components/Btn'
 // import WorkView from '@/views/Work'
 import Shred from '@/views/Shred'
 import WorkView from '@/views/NFT'
+import Info from '@/views/Info'
 import Filters from '@/views/Filters'
 import SetView from '@/views/Set'
 import ViewToken from '@/views/ViewToken'
@@ -140,7 +148,7 @@ export default {
       // [body, work-panel]
       const wide = ['scale-x-10 sm_scale-x-20 lg_scale-x-33', 'w-9x10 sm_w-4x5 lg_w-2x3']
       const narrow = ['scale-x-50 lg_scale-x-60', 'w-1x2 lg_w-2x5']
-      const isNarrow = this.$route.name === 'filter'
+      const isNarrow = ['filter', 'info'].includes(this.$route.name)
       this.panelWidths = isNarrow ? narrow : wide
     },
     openPanel () {

@@ -39,6 +39,14 @@ export default new Router({
       component: Index
     },
 
+    // info
+    {
+      path: '/info',
+      name: 'info',
+      component: Index,
+      meta: { layout: 'panel' }
+    },
+
     // filter
     {
       path: '/filter',

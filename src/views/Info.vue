@@ -4,14 +4,12 @@
       //- scrollable column
       .flex-1.relative.h-screen.overflow-y-scroll.scrollbars-hiddenff.transition.duration-500
         ul.p-10
-          h6.font-bold Collections
-          li [ ] Mutant Garden Seeder
-          li [ ] ...
+          h6 ...
 </template>
 
 <script>
 export default {
-  name: 'Filter'
+  name: 'Info'
 }
 </script>
 

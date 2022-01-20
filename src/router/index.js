@@ -39,6 +39,22 @@ export default new Router({
       component: Index
     },
 
+    // filter
+    {
+      path: '/filter',
+      name: 'filter',
+      component: Index,
+      meta: { layout: 'panel' }
+    },
+
+    // shred
+    {
+      path: '/shred',
+      name: 'shred',
+      component: Index,
+      meta: { layout: 'panel' }
+    },
+
     // work
     {
       path: '/works/:work',

@@ -27,7 +27,7 @@ export default {
   name: 'App',
   metaInfo: {
     titleTemplate: (ttl) => {
-      return ttl ? `${ttl} – Folia` : 'Folia'
+      return ttl ? `${ttl} – App` : 'NFT App'
     }
   },
   computed: {
@@ -37,8 +37,8 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('init')
-    this.$store.dispatch('prismic/getDocs')
+    // this.$store.dispatch('init')
+    // this.$store.dispatch('prismic/getDocs')
   },
   mounted () {
     return document.getElementById('loading')?.remove()

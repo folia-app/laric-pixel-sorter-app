@@ -34,7 +34,7 @@
           
           //- logo
           .flex-1.px-10.flex.items-center.md_px-12.pointer-events-auto
-            div #[span.line-through NFT] Shredder
+            div #[span.line-through NFT Shredder]
             //- button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
               logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
             //- svg-fleuron.block.text-white(style="height:3rem")

@@ -306,6 +306,7 @@ module.exports = {
       '6xl': '72rem',
       full: '100%',
       '1x2': '50%',
+      '3x4': '75%',
       ...breakpoints(theme('screens'))
     }),
     minHeight: (theme) => ({
@@ -320,6 +321,7 @@ module.exports = {
     }),
     minWidth: {
       0: '0',
+      '33vw': '33vw',
       full: '100%'
     },
     objectPosition: {
@@ -339,6 +341,7 @@ module.exports = {
       25: '0.25',
       33: '0.33',
       50: '0.5',
+      60: '0.6',
       75: '0.75',
       90: '0.9',
       100: '1'
@@ -658,6 +661,7 @@ module.exports = {
       spin: 'spin 1s linear infinite',
       ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
       pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      pulse2: 'pulse2 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       bounce: 'bounce 1s infinite'
     },
     keyframes: {
@@ -669,6 +673,11 @@ module.exports = {
       },
       pulse: {
         '50%': { opacity: '.5' }
+      },
+      pulse2: {
+        '0%': { opacity: '0.1' },
+        '50%': { opacity: '.95' },
+        '100%': { opacity: '0.1' }
       },
       bounce: {
         '0%, 100%': {
@@ -794,7 +803,7 @@ module.exports = {
     transitionTimingFunction: ['responsive'],
     transitionDuration: ['responsive'],
     transitionDelay: ['responsive'],
-    animation: ['responsive']
+    animation: ['responsive', 'group-hover']
   },
   corePlugins: {},
   plugins: [

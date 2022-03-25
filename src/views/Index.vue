@@ -14,7 +14,7 @@
       .sticky.z-20.top-0.right-0.w-full.h-0
         .absolute.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-white.min-h-screen(:class="[panelWidths[1], {'scale-x-0': !panelOpen}]")
           //- panels
-          transition-group(name="pagesfade", @before-enter="setPanelWidths")            
+          transition-group(name="pagesfade", @before-enter="setPanelWidths")
             info(v-show="$route.name === 'info'", key="info")
             filters(v-show="$route.name === 'filter'", key="filter")
             //- set-view(v-if="$route.name === 'set'", key="set")
@@ -23,7 +23,7 @@
 
       //- close workpanel
       transition(name="fade")
-        button.focus_outline-none(v-show="panelOpen", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-25.md_opacity-50
+        button.focus_outline-none(v-show="panelOpen", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-60
 
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
@@ -31,20 +31,19 @@
         header.sticky.h-14.bg-gray-200.top-0.left-0.w-full.z-20.text-white.pointer-events-none.flex.text-black.text-smm(style="mix-blend-modeff:difference")
           //- .absolute.top-0.left-0.w-full
             .flex.w-full.justify-between.items-center
-          
+
           //- logo
           .flex-1.px-10.flex.items-center.md_px-12.pointer-events-auto
-            div #[span.line-through NFT Shredder]
+            div #[span.line-throughff NFT Decomposer]
             //- button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
               logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
             //- svg-fleuron.block.text-white(style="height:3rem")
-            
+
           router-link(to="/info").w-1x5.px-10.md_px-12.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.hover_bg-gray-400.transition.duration-500
             | Info
 
           router-link(to="/filter").w-1x5.px-10.md_px-12.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-400.transition.duration-500
             | Filter
-            
 
             //- connect
             //- div.pointer-events-auto
@@ -54,22 +53,52 @@
                 span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
 
         //- token grid
-        .grid.grid-cols-5
-          template(v-for="n in 100")
+        //- .grid.grid-cols-5
+          //- template(v-for="n in 100")
             //- thumbs...
             router-link.block.hover_bg-gray-300.transition.duration-1000(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
               .pb-full
+
+        //- token grid: max-w-full left
+        //- .flex.flex-wrap
+          template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
+            router-link.block.max-w-3x4.relative.hover_bg-gray-300ff.transition.duration-1000.group(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
+
+              img.block.w-auto.max-w-full.min-w-33vwff(:src="`/demo/${n}2.png`")
+
+              //- original
+              img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
+
+        //- token grid
+        .grid.grid-cols-2.md_grid-cols-3.items-end
+          template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
+            router-link.relative.group.block.hover_bg-gray-300.transition.duration-1000(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
+
+              img.w-full(:src="`/demo/${n}2.png`")
+
+              //- original
+              .absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100
+                img.absolute.overlay.group-hover_animate-pulse2(:src="`/demo/${n}1.png`")
+
+        //- token grid: x-scroll
+        //- .overflow-x-scroll.whitespace-no-wrap
+          template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
+            router-link.inline-block.relative.hover_bg-gray-300ff.transition.duration-1000.group(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
+
+              img.block.h-screen.w-auto(:src="`/demo/${n}2.png`")
+
+              //- original
+              //- img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
 
         //- credits
         .bg-gray-200
           .w-3x5.text-sm.h-24.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
 
-        .sticky.bottom-0.left-0.w-full
+        .sticky.z-10.bottom-0.left-0.w-full
           .absolute.bottom-0.left-0.w-full.h-24.flex.justify-end
-            router-link.w-2x5.flex.items-center.justify-center.bg-gray-300.relative(to="/shred")
-              div.text-sm Shred your NFTs ꩜
+            router-link.w-1x3.flex.items-center.justify-center.bg-gray-300.relative(to="/shred")
+              div.text-sm Mint / Decompose ꩜
               .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
-        
 
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")

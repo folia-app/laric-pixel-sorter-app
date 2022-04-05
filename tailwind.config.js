@@ -19,6 +19,7 @@ module.exports = {
     },
     spacing: {
       px: '1px',
+      em: '1.35em',
       0: '0',
       1: '0.25rem',
       2: '0.5rem',
@@ -28,12 +29,15 @@ module.exports = {
       6: '1.5rem',
       7: '1.75rem',
       8: '2rem',
+      9: '2.25rem',
       10: '2.5rem',
       12: '3rem',
       14: '3.5rem',
       16: '4rem',
       20: '5rem',
+      22: '5.5rem',
       24: '6rem',
+      26: '6.5rem',
       28: '7rem',
       32: '8rem',
       36: '9rem',
@@ -84,6 +88,7 @@ module.exports = {
         100: '#f5f5f5',
         200: '#e5e5e5',
         300: '#d4d4d4',
+        350: '#c6c6c6',
         400: '#a3a3a3',
         500: '#737373',
         600: '#525252',
@@ -288,10 +293,11 @@ module.exports = {
       ...theme('spacing'),
       ...negative(theme('spacing'))
     }),
-    maxHeight: {
+    maxHeight: (theme) => ({
+      ...theme('spacing'),
       full: '100%',
       screen: '100vh'
-    },
+    }),
     maxWidth: (theme, { breakpoints }) => ({
       none: 'none',
       xs: '20rem',
@@ -321,6 +327,7 @@ module.exports = {
     }),
     minWidth: {
       0: '0',
+      '1x8': 'calc(100% / 8)',
       '33vw': '33vw',
       full: '100%'
     },
@@ -410,6 +417,7 @@ module.exports = {
       '3x6': '50%',
       '4x6': '66.666667%',
       '5x6': '83.333333%',
+      '1x8': 'calc(100% / 8)',
       '9x10': '90%',
       '1x12': '8.333333%',
       '2x12': '16.666667%',
@@ -811,7 +819,10 @@ module.exports = {
       const newUtilities = {
         '.blend-difference': {
           'mix-blend-mode': 'difference'
-        }
+        },
+        '.text-columns-4': { columns: '4' },
+        '.text-columns-3': { columns: '3' },
+        '.text-columns-2': { columns: '2' }
       }
 
       addUtilities(newUtilities, { variants: ['responsive'] })

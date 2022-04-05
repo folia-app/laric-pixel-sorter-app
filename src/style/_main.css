@@ -8,6 +8,12 @@ html{
   font-size:10px;
 }
 
+a, button{
+  &:focus{
+    outline:none;
+  }
+}
+
 .overlay{
   @apply w-full h-full top-0 left-0;
 }

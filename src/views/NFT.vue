@@ -17,7 +17,7 @@
           section.flex.flex-col.bg-gray-50
             header.p-8
               .flex.justify-between
-                h1.line-throughff Algoia
+                h1.line-throughff Decomposed Algoia
                 div {{ '#' + $route.params.work }}
               div owner.eth
               div #[router-link(to="/").border-b.border-gray-300 Mutant Garden Seeder] #[sup.text-xs.text-gray-400 88]

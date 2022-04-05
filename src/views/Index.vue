@@ -27,58 +27,67 @@
 
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
-        //- HEADER
-        header.sticky.h-14.bg-gray-200.top-0.left-0.w-full.z-20.text-white.pointer-events-none.flex.text-black.text-smm(style="mix-blend-modeff:difference")
-          //- .absolute.top-0.left-0.w-full
-            .flex.w-full.justify-between.items-center
 
-          //- logo
-          .flex-1.px-10.flex.items-center.md_px-12.pointer-events-auto
-            div #[span.line-throughff NFT Decomposer]
-            //- button.focus_outline-none(@click="onLogoClick", aria-label="About Folia")
-              logo.block.text-white.h-12.cursor-poiner(aria-label="Folia")
-            //- svg-fleuron.block.text-white(style="height:3rem")
+        //- HEADER AS INTRO
+        header.sticky.left-0.top-0.w-full.flex.flex-col.text-md.z-20
+          //- top bar
+          .flex.flex-wrap.w-full.bg-gray-100
+            h1.sr-only Decomposer
 
-          router-link(to="/info").w-1x5.px-10.md_px-12.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.hover_bg-gray-400.transition.duration-500
-            | Info
+            .w-full.lg_w-auto.lg_flex-1.flex.bg-gray-100
+              a.w-20.h-20.flex.items-center.justify-center.borderff.pb-2.pr-2.hover_bg-yellow(href="https://folia.app", target="_blank")
+                svg-fleuron(style="height:1.4em")
 
-          router-link(to="/filter").w-1x5.px-10.md_px-12.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-400.transition.duration-500
-            | Filter
+              .h-20.flex-1.flex.items-center
+                div <b>Decomposer</b> mints strata of old.
 
-            //- connect
-            //- div.pointer-events-auto
-              button.p-10.focus_outline-none(v-if="!address", @click="$store.dispatch('connect')") Connect
-              button.p-10.focus_outline-none.relative.group(v-else, @click="$store.dispatch('disconnect')")
-                span.group-hover_opacity-0.truncate {{ address.slice(0, 6) + '...' + address.slice(-4) }}
-                span.hidden.group-hover_block.absolute.overlay.text-right.p-10 Disconnect
+            button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-200(@click="infoVisible = !infoVisible")
+              | Info
+
+            router-link(to="/filter").text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-300
+              | Filter
+
+        //- (info expands)
+        section.w-full.bg-gray-200(v-show="infoVisible")
+          .px-10.py-10.leading-normal
+            p An interactive NFT collection by artist #[a.font-bold.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/", target="_blank", rel="noopener noreferrer") Oliver Laric].
+            p.mt-em In Decomposer, collectors can mint a new "decomposed" NFT from one in #[b their own collection]. Each pixel will be arranged from lightest to darkness&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
+
+            p.mt-em At this time, only a <b>selected list</b> of NFT collections may be minted, with a limit of <b>88 mints per collection</b>, and max of <b>888 total mints</b> in the collection:
+
+            .mt-em.relative(:class="{'max-h-56 overflow-hidden': whitelistExcerpted}")
+              ul.text-columns-2.md_text-columns-3.lg_text-columns-4.pb-16
+                li(v-for="item in whitelist")
+                  template(v-if="item[1]")
+                    a(:href="item[1]", target="_blank", rel="noopener")
+                     span.border-b.border-dashed.hover_border-solid.border-gray-600 {{ item[0] }}
+                     span(style="font-size:0.8em") &nbsp;↗
+                  template(v-else)
+                    | {{ item[0] }}
+
+              .absolute.bottom-0.left-0.w-full.pointer-events-none
+                .h-48(:class="{'bg-gradient-to-b from-transparent to-gray-200': whitelistExcerpted}")
+                button.py-1.bg-gray-200.text-xxs.uppercase.tracking-wide.flex.w-full.justify-center.pointer-events-auto(@click="whitelistExcerpted = !whitelistExcerpted")
+                  .py-2.px-4.leading-none.rounded-full.border-current.bg-gray-300.hover_bg-gray-400
+                    | {{ whitelistExcerpted ? 'MORE' : 'LESS' }}
+
+          footer.flex.w-full
+            button.text-sm.uppercase.h-20.w-1x2.flex.items-center.justify-center.bg-gray-300(@click="infoVisible = !infoVisible")
+              | Contract &nbsp;↗
+
+            router-link(to="/filter").text-sm.uppercase.h-20.w-1x2.flex.items-center.justify-center.bg-gray-350
+              | OpenSea &nbsp;↗
 
         //- token grid
-        //- .grid.grid-cols-5
-          //- template(v-for="n in 100")
-            //- thumbs...
-            router-link.block.hover_bg-gray-300.transition.duration-1000(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
-              .pb-full
-
-        //- token grid: max-w-full left
-        //- .flex.flex-wrap
+        .grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
           template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
-            router-link.block.max-w-3x4.relative.hover_bg-gray-300ff.transition.duration-1000.group(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
-
-              img.block.w-auto.max-w-full.min-w-33vwff(:src="`/demo/${n}2.png`")
-
-              //- original
-              img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
-
-        //- token grid
-        .grid.grid-cols-2.md_grid-cols-3.items-end
-          template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
-            router-link.relative.group.block.hover_bg-gray-300.transition.duration-1000(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
+            router-link.relative.group.block.mt-32(:to="'/works/' + n")
 
               img.w-full(:src="`/demo/${n}2.png`")
 
               //- original
-              .absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100
-                img.absolute.overlay.group-hover_animate-pulse2(:src="`/demo/${n}1.png`")
+              .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
+                img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/demo/${n}1.png`")
 
         //- token grid: x-scroll
         //- .overflow-x-scroll.whitespace-no-wrap
@@ -92,12 +101,12 @@
 
         //- credits
         .bg-gray-200
-          .w-3x5.text-sm.h-24.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
+          .w-1x2.text-sm.h-26.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
 
         .sticky.z-10.bottom-0.left-0.w-full
-          .absolute.bottom-0.left-0.w-full.h-24.flex.justify-end
-            router-link.w-1x3.flex.items-center.justify-center.bg-gray-300.relative(to="/shred")
-              div.text-sm Mint / Decompose ꩜
+          .absolute.bottom-0.left-0.w-full.h-26.flex.justify-end
+            router-link.w-full.md_w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow.bg-gray-300.relative(to="/shred")
+              div.text-md Mint / Decompose ꩜
               .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
 
         //- info
@@ -126,6 +135,7 @@ import SliceTile from '@/slices/SliceTile'
 import SliceAuctions from '@/slices/SliceAuctions'
 import SliceAnnouncement from '@/slices/SliceAnnouncement'
 import Observer from '@/components/Observer'
+import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
@@ -139,7 +149,9 @@ export default {
       activeWork: this.$route.params.work,
       current: 0,
       panelWidths: [],
-      carouselTimer: null
+      carouselTimer: null,
+      whitelist,
+      whitelistExcerpted: true
     }
   },
   computed: {

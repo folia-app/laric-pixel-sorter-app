@@ -27,7 +27,7 @@ export default {
   name: 'App',
   metaInfo: {
     titleTemplate: (ttl) => {
-      return ttl ? `${ttl} – App` : 'NFT App'
+      return ttl ? `${ttl} – Decomposer` : 'Decomposer'
     }
   },
   computed: {

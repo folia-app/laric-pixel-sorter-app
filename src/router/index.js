@@ -55,10 +55,10 @@ export default new Router({
       meta: { layout: 'panel' }
     },
 
-    // shred
+    // mint
     {
-      path: '/shred',
-      name: 'shred',
+      path: '/mint',
+      name: 'mint',
       component: Index,
       meta: { layout: 'panel' }
     },

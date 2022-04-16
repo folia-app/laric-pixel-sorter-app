@@ -27,7 +27,7 @@ export default {
   name: 'App',
   metaInfo: {
     titleTemplate: (ttl) => {
-      return ttl ? `${ttl} – Decomposer` : 'Decomposer'
+      return ttl ? `${ttl} – Decomposer` : 'Decomposer by Oliver Laric'
     }
   },
   computed: {
@@ -37,7 +37,7 @@ export default {
     }
   },
   created () {
-    // this.$store.dispatch('init')
+    this.$store.dispatch('init')
     // this.$store.dispatch('prismic/getDocs')
   },
   mounted () {

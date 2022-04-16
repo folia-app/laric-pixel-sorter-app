@@ -17,6 +17,7 @@ module.exports = {
       config
         .output
         .filename('[name].[hash].js')
+        .chunkFilename('[name].[hash].js')
         .end()
     }
   },

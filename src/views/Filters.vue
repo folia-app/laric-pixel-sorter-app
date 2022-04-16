@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'Filter'
+  name: 'FilterIndex'
 }
 </script>
 

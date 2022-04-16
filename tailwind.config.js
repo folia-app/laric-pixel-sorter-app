@@ -15,7 +15,8 @@ module.exports = {
       sm: '568px',
       md: '768px',
       lg: '1024px', // TODO - consider 960 for tiles to go 3col
-      xl: '1440px'
+      xl: '1440px',
+      mouse: { raw: '(hover:hover)' }
     },
     spacing: {
       px: '1px',
@@ -99,7 +100,10 @@ module.exports = {
       },
       'gray-700-a15': 'rgba(100,100,100,0.15)',
 
-      yellow: 'yellow',
+      yellow: {
+        500: 'yellow',
+        600: '#f5f500'
+      },
       red: 'red',
       'red-duller': '#ce1212' // soldout
     },

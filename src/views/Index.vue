@@ -18,7 +18,7 @@
             info(v-show="$route.name === 'info'", key="info")
             filters(v-show="$route.name === 'filter'", key="filter")
             //- set-view(v-if="$route.name === 'set'", key="set")
-            shred(v-if="$route.name === 'shred'", key="shred")
+            mint-view(v-if="$route.name === 'mint'", key="mint")
             work-view(v-else-if="activeWork", :key="$route.params.work")
 
       //- close workpanel
@@ -31,11 +31,11 @@
         //- HEADER AS INTRO
         header.sticky.left-0.top-0.w-full.flex.flex-col.text-md.z-20
           //- top bar
-          .flex.flex-wrap.w-full.bg-gray-100
+          .flex.flex-wrap.w-full.items-start
             h1.sr-only Decomposer
 
             .w-full.lg_w-auto.lg_flex-1.flex.bg-gray-100
-              a.w-20.h-20.flex.items-center.justify-center.borderff.pb-2.pr-2.hover_bg-yellow(href="https://folia.app", target="_blank")
+              a.w-20.h-20.flex.items-center.justify-center.borderff.pb-2.pr-2.hover_bg-yellow-500(href="https://folia.app", target="_blank")
                 svg-fleuron(style="height:1.4em")
 
               .h-20.flex-1.flex.items-center
@@ -44,8 +44,14 @@
             button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-200(@click="infoVisible = !infoVisible")
               | Info
 
-            router-link(to="/filter").text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-300
-              | Filter
+            div.w-1x2.lg_w-1x4.overflow-hidden.text-sm
+              //- connect/disconnect btn
+              connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10
+
+              //- mint link
+              router-link(to="/mint").text-sm.uppercase.h-20.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.relative.mouse_hover_bg-yellow-600
+                div Mint
+                .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
 
         //- (info expands)
         section.w-full.bg-gray-200(v-show="infoVisible")
@@ -101,13 +107,18 @@
 
         //- credits
         .bg-gray-200
-          .w-1x2.text-sm.h-26.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
+          .w-1x2.text-sm.h-28.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
 
-        .sticky.z-10.bottom-0.left-0.w-full
-          .absolute.bottom-0.left-0.w-full.h-26.flex.justify-end
-            router-link.w-full.md_w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow.bg-gray-300.relative(to="/shred")
-              div.text-md Mint / Decompose ꩜
-              .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
+        //- .sticky.z-10.bottom-0.left-0.w-full
+          .absolute.bottom-0.left-0.w-full.h-28.flex.justify-end
+            .w-full.lg_w-1x2.flex.overflow-hidden
+              //- connect
+              button.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.relative.z-10.relative(style="box-shadow:2px 0px 4px rgba(0,0,0,0.1)")
+                | Connect 🔗
+              //- mint link
+              router-link.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.bg-gray-300.relative(to="/shred")
+                div.text-md Mint ꩜
+                .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
 
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
@@ -122,7 +133,7 @@ import svgFleuron from '@/components/SVG-Fleuron'
 // import WorkThumb from '@/components/WorkThumb'
 import Btn from '@/components/Btn'
 // import WorkView from '@/views/Work'
-import Shred from '@/views/Shred'
+import MintView from '@/views/Mint'
 import WorkView from '@/views/NFT'
 import Info from '@/views/Info'
 import Filters from '@/views/Filters'
@@ -135,15 +146,16 @@ import SliceTile from '@/slices/SliceTile'
 import SliceAuctions from '@/slices/SliceAuctions'
 import SliceAnnouncement from '@/slices/SliceAnnouncement'
 import Observer from '@/components/Observer'
+import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
 import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
-  components: { SliceTile, Shred, WorkView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer },
+  components: { SliceTile, MintView, WorkView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn },
   data () {
     return {
       squish: false,
-      infoVisible: true,
+      infoVisible: false,
       // workPanel: this.$route.name === 'work',
       panelOpen: this.$route.meta.layout === 'panel',
       activeWork: this.$route.params.work,
@@ -175,6 +187,8 @@ export default {
     }
   },
   methods: {
+
+    // ==================
     linkResolver,
     next () {
       this.current = this.current + 1 === this.workDocs.length ? 0 : this.current + 1
@@ -224,6 +238,7 @@ export default {
     pauseCarousel () {
       clearTimeout(this.carouselTimer)
     }
+
   },
   beforeRouteEnter (to, from, next) {
     lastRt = from

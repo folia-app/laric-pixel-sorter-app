@@ -46,7 +46,7 @@
 
             div.w-1x2.lg_w-1x4.overflow-hidden.text-sm
               //- connect/disconnect btn
-              connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10
+              connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10(connectLbl="CONNECT")
 
               //- mint link
               router-link(to="/mint").text-sm.uppercase.h-20.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.relative.mouse_hover_bg-yellow-600

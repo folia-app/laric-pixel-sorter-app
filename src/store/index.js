@@ -166,9 +166,9 @@ export default new Vuex.Store({
       // state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
       // console.log('auctions:', ReserveAuction.networks[chainId].address)
     },
-    SAVE_ADDRESS (state, { address, ens }) {
+    SAVE_ADDRESS (state, { address, ens, openSea }) {
       const addrs = JSON.parse(JSON.stringify(state.addresses))
-      addrs[address.toLowerCase()] = { ens }
+      addrs[address.toLowerCase()] = { ens, openSea }
       state.addresses = addrs
     }
   },
@@ -765,15 +765,16 @@ export default new Vuex.Store({
 
         // fetch new...
         if (!provider) await dispatch('init')
-        let ens = await provider.lookupAddress(address)
+        const ens = await provider.lookupAddress(address)
 
         // fetch from opensea...
+        let openSea
         if (!ens) {
-          ens = await dispatch('getAddressOpenSeaName', address)
+          openSea = await dispatch('getAddressOpenSeaName', address)
         }
 
         // save even if null so we don't have to lookup again
-        commit('SAVE_ADDRESS', { address, ens })
+        commit('SAVE_ADDRESS', { address, ens, openSea })
 
         // if (ens) {
         //   // get records async...

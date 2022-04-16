@@ -7,16 +7,17 @@ export default {
   name: 'Addr',
   props: {
     address: { type: String, default: '-' },
-    short: { type: Boolean, default: true }
+    short: { type: Boolean, default: true },
+    openSeaEnabled: { type: Boolean, default: false }
   },
   computed: {
-    ens () {
-      return this.address && this.$store.state.addresses[this.address.toLowerCase()]?.ens
-    },
     name () {
-      if (this.ens) return this.ens
-      if (this.short) return this.$store.getters.addrShort(this.address)
-      return this.address
+      const profile = this.$store.state.addresses[this.address?.toLowerCase()] || {}
+
+      return profile.ens ? profile.ens
+        : profile.openSea && this.openSeaEnabled ? profile.openSea
+          : this.short ? this.$store.getters.addrShort(this.address)
+            : this.address
     }
   },
   mounted () {

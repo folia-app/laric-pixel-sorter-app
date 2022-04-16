@@ -3,18 +3,8 @@
     //- main
     .app__main.relative.z-20
       router-view
-      //- scrim
-      //- transition(name="fade")
-        .absolute.w-full.h-full.top-0.left-0.opacity-50.bg-black.z-10.cursor-pointer(v-show="viewNotifs", @click="viewNotifs = false")
-    //- notifications
-    //- notifications.app__notifications.fixed.z3.top-0.left-0.h-100.col-11.md-col-6.lg-col-5(:class="{'app__notifications--squished': !viewNotifs}")
-    //- notifications toggle / counter
-    //- transition(name="fadeinonly")
-      nav.fixed.bottom-0.left-0.p2.z3(v-show="!viewNotifs")
-        button.bg-white.black.border.cursor-pointer.flex.items-center.justify-center(@click="viewNotifs = !viewNotifs", style="width:2em; height:2em;", title="View Notifications")
-          span {{notifications.length}}
 
-    template(v-if="isWrongNetwork")
+    //- template(v-if="isWrongNetwork")
       .p-8 Oops
       .fixed.z-50.bottom-0.left-0.w-full.p-6.md_p-8.bg-yellow.text-black.text-center.-shadow-md.font-sans.text-sm.md_text-base.lg_text-lg(v-html="'Wrong&nbsp;Network&nbsp;🤖 Please&nbsp;switch&nbsp;to&nbsp;Mainnet'")
 </template>

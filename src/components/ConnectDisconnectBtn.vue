@@ -12,8 +12,8 @@
       .relative.w-full.flex.items-center
         .w-full.text-center.pt-1
           addr(:address="$store.state.address")
-        button.absolute.top-0.right-0.h-full.flex.items-center.w-24.justify-center.mouse_hover_bg-yellow-600(@click="disconnectWallet", title="Disconnect")
-          svg-x.h-5.w-5
+        button.absolute.top-0.right-0.h-full.flex.items-center.justify-center.mouse_hover_bg-yellow-600(@click="disconnectWallet", title="Disconnect", :class="[closeBtnWidth]")
+          svg-x.h-4.w-4(strokeWidth="1.1")
 </template>
 
 <script>
@@ -22,7 +22,8 @@ import SvgX from '@/components/SVG-X'
 export default {
   name: 'ConnectDisconnectBtn',
   props: {
-    connectLbl: { type: String, default: 'Connect' }
+    connectLbl: { type: String, default: 'Connect' },
+    closeBtnWidth: { type: String, default: 'w-24' }
   },
   components: { Addr, SvgX },
   methods: {

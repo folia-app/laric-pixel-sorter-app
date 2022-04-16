@@ -9,10 +9,16 @@ html{
 }
 
 a, button{
-  text-transform: inherit;
-  letter-spacing: inherit;
   &:focus{
     outline:none;
+  }
+}
+
+button {
+  text-transform: inherit;
+  letter-spacing: inherit;
+  &[disabled] {
+    @apply cursor-not-allowed;
   }
 }
 

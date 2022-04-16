@@ -8,23 +8,23 @@
     //- .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': !viewToken}")
       view-token(:token="viewToken", @close="closeViewer")
 
+    //- (RIGHT PANEL)
+    .fixed.z-20.top-0.right-0.w-full.h-full.pointer-events-none
+      .absolute.z-10.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-white.min-h-screen.pointer-events-auto(:class="[panelWidths[1], {'scale-x-0': !panelOpen}]")
+        //- panels
+        transition-group(name="pagesfade", @before-enter="setPanelWidths")
+          info(v-show="$route.name === 'info'", key="info")
+          filters(v-show="$route.name === 'filter'", key="filter")
+          //- set-view(v-if="$route.name === 'set'", key="set")
+          mint-view(v-if="$route.name === 'mint'", key="mint")
+          work-view(v-else-if="activeWork", :key="$route.params.work")
+
+      //- (close panel overlay)
+      transition(name="fade")
+        button.absolute.overlay.bg-black.cursor-pointer.opacity-75.focus_outline-none.pointer-events-auto(v-show="panelOpen", @click="$router.push('/')")
+
     //- BODY - squishes for video player
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0ff': viewToken}")
-      //- (WORK PANEL)
-      .sticky.z-20.top-0.right-0.w-full.h-0
-        .absolute.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-white.min-h-screen(:class="[panelWidths[1], {'scale-x-0': !panelOpen}]")
-          //- panels
-          transition-group(name="pagesfade", @before-enter="setPanelWidths")
-            info(v-show="$route.name === 'info'", key="info")
-            filters(v-show="$route.name === 'filter'", key="filter")
-            //- set-view(v-if="$route.name === 'set'", key="set")
-            mint-view(v-if="$route.name === 'mint'", key="mint")
-            work-view(v-else-if="activeWork", :key="$route.params.work")
-
-      //- close workpanel
-      transition(name="fade")
-        button.focus_outline-none(v-show="panelOpen", @click="$router.push('/')").absolute.overlay.bg-black.z-10.cursor-pointer.opacity-60
-
       //- MAIN
       main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
 
@@ -41,48 +41,17 @@
               .h-20.flex-1.flex.items-center
                 div <b>Decomposer</b> mints strata of old.
 
-            button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-200(@click="infoVisible = !infoVisible")
+            button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-200(@click="openInfoOverlay")
               | Info
 
             div.w-1x2.lg_w-1x4.overflow-hidden.text-sm
               //- connect/disconnect btn
-              connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10(connectLbl="CONNECT")
+              connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10(connectLbl="CONNECT", closeBtnWidth="w-20")
 
               //- mint link
               router-link(to="/mint").text-sm.uppercase.h-20.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.relative.mouse_hover_bg-yellow-600
                 div Mint
-                .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
-
-        //- (info expands)
-        section.w-full.bg-gray-200(v-show="infoVisible")
-          .px-10.py-10.leading-normal
-            p An interactive NFT collection by artist #[a.font-bold.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/", target="_blank", rel="noopener noreferrer") Oliver Laric].
-            p.mt-em In Decomposer, collectors can mint a new "decomposed" NFT from one in #[b their own collection]. Each pixel will be arranged from lightest to darkness&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
-
-            p.mt-em At this time, only a <b>selected list</b> of NFT collections may be minted, with a limit of <b>88 mints per collection</b>, and max of <b>888 total mints</b> in the collection:
-
-            .mt-em.relative(:class="{'max-h-56 overflow-hidden': whitelistExcerpted}")
-              ul.text-columns-2.md_text-columns-3.lg_text-columns-4.pb-16
-                li(v-for="item in whitelist")
-                  template(v-if="item[1]")
-                    a(:href="item[1]", target="_blank", rel="noopener")
-                     span.border-b.border-dashed.hover_border-solid.border-gray-600 {{ item[0] }}
-                     span(style="font-size:0.8em") &nbsp;↗
-                  template(v-else)
-                    | {{ item[0] }}
-
-              .absolute.bottom-0.left-0.w-full.pointer-events-none
-                .h-48(:class="{'bg-gradient-to-b from-transparent to-gray-200': whitelistExcerpted}")
-                button.py-1.bg-gray-200.text-xxs.uppercase.tracking-wide.flex.w-full.justify-center.pointer-events-auto(@click="whitelistExcerpted = !whitelistExcerpted")
-                  .py-2.px-4.leading-none.rounded-full.border-current.bg-gray-300.hover_bg-gray-400
-                    | {{ whitelistExcerpted ? 'MORE' : 'LESS' }}
-
-          footer.flex.w-full
-            button.text-sm.uppercase.h-20.w-1x2.flex.items-center.justify-center.bg-gray-300(@click="infoVisible = !infoVisible")
-              | Contract &nbsp;↗
-
-            router-link(to="/filter").text-sm.uppercase.h-20.w-1x2.flex.items-center.justify-center.bg-gray-350
-              | OpenSea &nbsp;↗
+                .absolute.top-0.right-0.h-full.flex.items-center.w-20.justify-center &rarr;
 
         //- token grid
         .grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
@@ -123,6 +92,51 @@
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
 
+    //- (info overlay)
+    aside.fixed.z-40.top-0.left-0.w-full.h-full.overflow-y-scroll(ref="infoEl", :class="{'pointer-events-none': !infoVisible}")
+      //- (reveals as background fades in)
+      .relative
+        //- info card
+        .relative.z-10.bg-gray-200(@click.stop, v-show="infoVisible")
+          .px-10.py-10.leading-normal
+            p.pr-10 A new interactive NFT collection by artist #[a.font-bold.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/", target="_blank", rel="noopener noreferrer") Oliver Laric].
+            p.mt-em In Decomposer, collectors mint new "decomposed" NFTs from #[b their own collection]. Each pixel will be arranged from lightest to darkness&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
+
+            p.mt-em At this time, only a <b>selected list</b> of NFT collections may be minted, with a limit of <b>88 mints per collection</b>, and max of <b>888 total mints</b> in the collection:
+
+            .mt-em.relative(:class="{'max-h-56 overflow-hidden': whitelistExcerpted}")
+              ul.text-columns-2.md_text-columns-3.lg_text-columns-4.pb-16
+                li(v-for="item in whitelist")
+                  template(v-if="item[1]")
+                    a(:href="item[1]", target="_blank", rel="noopener")
+                     span.border-b.border-dashed.hover_border-solid.border-gray-600 {{ item[0] }}
+                     span(style="font-size:0.8em") &nbsp;↗
+                  template(v-else)
+                    | {{ item[0] }}
+
+              .absolute.bottom-0.left-0.w-full.pointer-events-none
+                .h-48(:class="{'bg-gradient-to-b from-transparent to-gray-200': whitelistExcerpted}")
+                button.py-1.bg-gray-200.text-xxs.uppercase.tracking-wide.flex.w-full.justify-center.pointer-events-auto(@click="whitelistExcerpted = !whitelistExcerpted")
+                  .py-2.px-4.leading-none.rounded-full.border-current.bg-gray-300.hover_bg-gray-400
+                    | {{ whitelistExcerpted ? 'MORE' : 'LESS' }}
+
+          footer.flex.w-full
+            button.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-300.mouse_hover_bg-gray-400(@click="infoVisible = !infoVisible")
+              | Contract &nbsp;↗
+
+            router-link(to="/filter").text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-350.mouse_hover_bg-gray-400
+              | OpenSea &nbsp;↗
+
+          //- close btn
+          button.absolute.top-0.right-0.w-20.h-20.flex.items-center.justify-center.bg-black-a08(@click.stop="closeInfoOverlay")
+            svg-x.w-5.h-5(strokeWidth="1.15")
+
+        //- scroll off area
+        observer#info-scroll-end.pointer-events-none(style="height:133vh", :threshold="0.75", @visible="closeInfoOverlay")
+
+        //- background
+        button.block.absolute.overlay.bg-black-a60.transition.duration-1000(:class="{'opacity-0 pointer-events-none': !infoVisible}", @click.stop="infoVisible = false", aria-label="Close Info")
+
 </template>
 
 <script>
@@ -147,11 +161,12 @@ import SliceAuctions from '@/slices/SliceAuctions'
 import SliceAnnouncement from '@/slices/SliceAnnouncement'
 import Observer from '@/components/Observer'
 import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
+import SvgX from '@/components/SVG-X'
 import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
-  components: { SliceTile, MintView, WorkView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn },
+  components: { SliceTile, MintView, WorkView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX },
   data () {
     return {
       squish: false,
@@ -187,6 +202,14 @@ export default {
     }
   },
   methods: {
+    async openInfoOverlay () {
+      this.infoVisible = true
+      await this.$nextTick()
+      this.$refs.infoEl.scrollTo(0, 0)
+    },
+    closeInfoOverlay () {
+      this.infoVisible = false
+    },
 
     // ==================
     linkResolver,
@@ -201,7 +224,7 @@ export default {
     },
     setPanelWidths () {
       // [body, work-panel]
-      const wide = ['scale-x-10 sm_scale-x-20 lg_scale-x-33', 'w-9x10 sm_w-4x5 lg_w-2x3']
+      const wide = ['scale-x-5 sm_scale-x-20 lg_scale-x-33', 'w-19x20 sm_w-4x5 lg_w-2x3']
       const narrow = ['scale-x-50 lg_scale-x-60', 'w-1x2 lg_w-2x5']
       const isNarrow = ['filter', 'info'].includes(this.$route.name)
       this.panelWidths = isNarrow ? narrow : wide
@@ -216,40 +239,8 @@ export default {
       this.panelOpen = false
       setTimeout(() => this.setPanelWidths(), 700) // after transition
     },
-    nextSlide (autoplay = true) {
-      this.current = this.current + 1 === this.home.landing.length ? 0 : this.current + 1
-      // autoplay carousel ?
-      return autoplay ? this.autoplayCarousel() : this.pauseCarousel()
-    },
-    autoplayCarousel () {
-      const interval = this.home?.landing_carousel_autoplay_interval // seconds
-      const canPlay = interval > 0 && this.carouselEnabled && this.$route.name === 'index'
-      if (canPlay) {
-        // first time? pause on window.blur
-        if (!this.carouselTimer) {
-          window.addEventListener('blur', this.pauseCarousel)
-        }
-        // reset
-        clearTimeout(this.carouselTimer)
-        // queue
-        this.carouselTimer = setTimeout(() => this.nextSlide(), interval * 1000)
-      }
-    },
-    pauseCarousel () {
-      clearTimeout(this.carouselTimer)
-    }
 
-  },
-  beforeRouteEnter (to, from, next) {
-    lastRt = from
-    next()
-  },
-  beforeRouteUpdate (to, from, next) {
-    lastRt = from
-    next()
-  },
-  watch: {
-    '$route' (to, from) {
+    onRoute (to) {
       // open panel ?
       if (to.meta.layout === 'panel') {
         this.openPanel()
@@ -257,28 +248,39 @@ export default {
       // index / no panel ?
       if (to.name === 'index') {
         this.closeWorkPanel()
-        this.autoplayCarousel()
-      } else {
-        this.pauseCarousel()
       }
       // update active work ?
       if (to.params.work) {
         this.activeWork = to.params.work.toString()
       }
+    }
+
+  },
+
+  beforeRouteEnter (to, from, next) {
+    lastRt = from
+    next()
+  },
+
+  beforeRouteUpdate (to, from, next) {
+    lastRt = from
+    next()
+  },
+
+  created () {
+    // init view
+    this.onRoute(this.$route)
+  },
+
+  watch: {
+    '$route' (to, from) {
+      this.onRoute(to)
     },
     workDocs () {
       this.setPanelWidths()
-    },
-    home (doc) {
-      if (doc) this.autoplayCarousel()
     }
   },
-  created () {
-    // prevent load on view (for now...)
-    if (this.$route.name === 'view') {
-      // this.$router.replace('/')
-    }
-  },
+
   metaInfo () {
     if (this.$route.name === 'index') {
       return {

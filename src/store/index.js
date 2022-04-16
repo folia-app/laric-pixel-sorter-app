@@ -13,6 +13,7 @@ import { exception } from 'vue-gtag'
 // modules
 import prismic from './prismic'
 import auctions from './auctions'
+import wallet from './wallet'
 
 let provider, signer, walletProvider, initializing, web3
 
@@ -40,7 +41,7 @@ const web3Modal = new Web3Modal({
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules: { prismic, auctions },
+  modules: { prismic, auctions, wallet },
   state: {
     address: null,
     networkId: null,

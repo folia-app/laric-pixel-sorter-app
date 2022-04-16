@@ -49,11 +49,13 @@
                 .pb-full
                   .absolute.overlay.flex.items-center.justify-center.text-sm.opacity-10 {{ n }}
 
-          .sticky.z-10.bottom-0.left-0.w-full.h-24.flex.text-sm
-            router-link.w-1x2.flex.items-center.justify-center.bg-gray-200(to="/")
-              div &larr; View All
-            router-link.w-1x2.flex.items-center.justify-center.bg-gray-300(to="/shred")
-              div Mint / Decompose ꩜
+          .sticky.z-10.bottom-0.left-0.w-full.h-28.flex.text-sm
+            router-link.w-1x2.flex.items-center.justify-center.bg-gray-200.relative(to="/")
+              .w-28.h-full.flex.items-center.justify-center.absolute.top-0.left-0 &larr;
+              div View All
+            router-link.w-1x2.flex.items-center.justify-center.bg-gray-300.relative(to="/mint")
+              div Mint New
+              .w-28.h-full.flex.items-center.justify-center.absolute.top-0.right-0 ꩜
 </template>
 
 <script>

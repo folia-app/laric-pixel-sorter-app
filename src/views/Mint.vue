@@ -60,10 +60,12 @@
 
               //- mint btn
               button.block.w-full.relative(:disabled="!selection", :class="{'bg-yellow-500 mouse_hover_bg-yellow-600': selection}")
-                .absolute.z-10.left-0.top-0.h-full.w-48.flex.items-center.justify-center.bg-black-a15 3
+                //- (step icon)
+                .absolute.z-10.left-0.top-0.h-full.w-48.flex.items-center.justify-center.bg-black-a15(v-show="!selection")
+                  | 3
+                //-
                 .flex.h-48.w-full.items-center.justify-center.uppercase.tracking-wide.relative
                   | Mint
-                  //- .absolute.bottom-0.left-0.w-full.pb-2.text-xxs.text-center.opacity-50(v-if="selection") 0.08 ETH
                 //- (icon)
                 .absolute.w-48.h-full.top-0.right-0.flex.items-center.justify-center(v-if="selection") ꩜
 

@@ -27,7 +27,7 @@ export default [
   ['Fast Food Punks', 'https://opensea.io/collection/fast-food-punks'],
   ['Fidenza by Tyler Hobbs', 'https://opensea.io/collection/fidenza-by-tyler-hobbs'],
   ['FOMO Dog Club', 'https://opensea.io/collection/fomo-dog-club'],
-  ['Fragments of an Infinite Field by Monica Rizzolli', 'https://opensea.io/collectionfragments-of-an-infinite-field-by-monica-rizzolli'],
+  ['Fragments of an Infinite Field by Monica Rizzolli', 'https://opensea.io/collection/fragments-of-an-infinite-field-by-monica-rizzolli'],
   ['Gutter Cat Gang', 'https://opensea.io/collection/guttercatgang'],
   ['Hashmasks', 'https://opensea.io/collection/hashmasks'],
   ['Lazy Lions', 'https://opensea.io/collection/lazy-lions'],

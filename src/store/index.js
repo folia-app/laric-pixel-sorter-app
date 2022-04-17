@@ -318,6 +318,44 @@ export default new Vuex.Store({
       return web3
     },
 
+    async getMintedEvents ({ state, dispatch }) {
+      try {
+        if (!state.controllerContract) await dispatch('init')
+        const events = await state.controllerContract.queryFilter('editionBought')
+        console.log(events)
+        return events
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
+    async getMinted ({ dispatch }) {
+      try {
+        const events = await dispatch('getMintedEvents')
+        // format
+        const minted = events.reverse().map(event => event.args)
+        return minted
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
+    async findMint ({ dispatch }, { contract, tokenId }) {
+      try {
+        const events = await dispatch('getMintedEvents')
+        // find mint event by matching contract and token id
+        return events.find(event => {
+          return event.args.contractAddress.toString().toLowerCase() === contract.toLowerCase() &&
+            event.args.tokenId.toString().toLowerCase() === tokenId.toLowerCase()
+        })
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
     async getCollectionsList ({ state, commit, dispatch }) {
       try {
         if (!state.controllerContract) await dispatch('init')
@@ -370,7 +408,6 @@ export default new Vuex.Store({
         // setup
         const contractSigner = state.controllerContract.connect(signer)
         const price = await dispatch('getMintPrice')
-        console.log('price', price.toString())
         // confirm...
         const tx = await contractSigner.buy(state.address, contract, tokenId, { value: price.toString() })
         return tx

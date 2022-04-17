@@ -215,28 +215,28 @@ export default {
     //   "name": "deletedContract",
     //   "type": "event"
     // },
-    // {
-    //   "anonymous": false,
-    //   "inputs": [
-    //     {
-    //       "indexed": false,
-    //       "name": "contractAddress",
-    //       "type": "address"
-    //     },
-    //     {
-    //       "indexed": false,
-    //       "name": "tokenId",
-    //       "type": "uint256"
-    //     },
-    //     {
-    //       "indexed": false,
-    //       "name": "newTokenId",
-    //       "type": "uint256"
-    //     }
-    //   ],
-    //   "name": "editionBought",
-    //   "type": "event"
-    // },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          name: 'contractAddress',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          name: 'tokenId',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          name: 'newTokenId',
+          type: 'uint256'
+        }
+      ],
+      name: 'editionBought',
+      type: 'event'
+    },
     // {
     //   "anonymous": false,
     //   "inputs": [

@@ -17,7 +17,7 @@
           filters(v-show="$route.name === 'filter'", key="filter")
           //- set-view(v-if="$route.name === 'set'", key="set")
           mint-view(v-if="$route.name === 'mint'", key="mint")
-          nft-view(v-else-if="activeWork", :key="$route.params.work")
+          nft-view(v-else-if="$route.name === 'work'", :key="$route.params.work")
 
       //- (close panel overlay)
       transition(name="fade")
@@ -100,15 +100,7 @@
 
         //- token grid ====================================
 
-        .grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
-          template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
-            router-link.relative.group.block.mt-32(:to="'/works/' + n")
-
-              img.w-full(:src="`/demo/${n}2.png`")
-
-              //- original
-              .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
-                img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/demo/${n}1.png`")
+        minted-results
 
         //- token grid: x-scroll
         //- .overflow-x-scroll.whitespace-no-wrap
@@ -163,18 +155,18 @@ import SliceAnnouncement from '@/slices/SliceAnnouncement'
 import Observer from '@/components/Observer'
 import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
 import SvgX from '@/components/SVG-X'
+import MintedResults from '@/components/MintedResults'
 import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
-  components: { SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX },
+  components: { SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX, MintedResults },
   data () {
     return {
       squish: false,
       infoVisible: false,
       // workPanel: this.$route.name === 'work',
       panelOpen: this.$route.meta.layout === 'panel',
-      activeWork: this.$route.params.work,
       current: 0,
       panelWidths: [],
       carouselTimer: null,
@@ -250,12 +242,7 @@ export default {
       if (to.name === 'index') {
         this.closeWorkPanel()
       }
-      // update active work ?
-      if (to.params.work) {
-        this.activeWork = to.params.work.toString()
-      }
     }
-
   },
 
   beforeRouteEnter (to, from, next) {

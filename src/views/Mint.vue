@@ -74,16 +74,30 @@
                   button.w-48.h-48.flex.items-center.justify-center.mouse_hover_bg-black-a15(@click="clearSelection")
                     svg-x.h-5.w-5
 
-                //- mint btn
-                button.block.w-full.relative(:disabled="!selection", :class="{'bg-yellow-500 mouse_hover_bg-yellow-600': selection}", @click="mint")
-                  //- (step icon)
-                  .absolute.z-10.left-0.top-0.h-full.w-48.flex.items-center.justify-center.bg-black-a15(v-show="!selection")
-                    | 3
-                  //-
-                  .flex.h-48.w-full.items-center.justify-center.uppercase.tracking-wide.relative
-                    | Mint
-                  //- (icon)
-                  .absolute.w-48.h-full.top-0.right-0.flex.items-center.justify-center(v-if="selection") ꩜
+                //- (success options)
+                template(v-if="status && status.type === 'success'")
+                  .flex.h-48
+                    button.w-1x2.flex.items-center.justify-center.bg-gray-100.mouse_hover_bg-gray-200(@click="clearSelection")
+                      | Select New ꩜
+
+                    button.w-1x2.flex.items-center.justify-center.bg-gray-200.relative(:disabled="!myMint", :class="{'bg-yellow-500 mouse_hover_bg-yellow-600': myMint}", @click="goToMinted")
+                      div.animate-pulse(v-if="!myMint") Loading...
+                      template(v-else)
+                        | View Minted
+                        //- icon
+                        .absolute.w-24.h-full.top-0.right-0.flex.items-center.justify-center.pt-2 →
+
+                //- (mint btn)
+                template(v-else)
+                  button.block.w-full.relative(:disabled="!selection", :class="{'bg-yellow-500 mouse_hover_bg-yellow-600': selection}", @click="mint")
+                    //- (step icon)
+                    .absolute.z-10.left-0.top-0.h-full.w-48.flex.items-center.justify-center.bg-black-a15(v-show="!selection")
+                      | 3
+                    //-
+                    .flex.h-48.w-full.items-center.justify-center.uppercase.tracking-wide.relative
+                      | Mint
+                    //- (icon)
+                    .absolute.w-48.h-full.top-0.right-0.flex.items-center.justify-center(v-if="selection") ꩜
 
 </template>
 
@@ -98,7 +112,8 @@ export default {
     return {
       selection: null,
       tx: null,
-      status: null
+      status: null,
+      myMint: null
     }
   },
 
@@ -111,17 +126,20 @@ export default {
   methods: {
     clearSelection () {
       this.selection = null
+      this.status = null
+      this.myMint = null
     },
 
     async mint () {
       let tx
       try {
+        this.myMint = null
         this.status = { msg: 'Confirm transaction in your wallet...' }
 
-        tx = await this.$store.dispatch('mint', {
-          contract: this.selection.collection.address,
-          tokenId: this.selection.tokenId
-        })
+        const contract = this.selection.collection.address
+        const tokenId = this.selection.tokenId
+        // confirm...
+        tx = await this.$store.dispatch('mint', { contract, tokenId })
 
         // wait for confirmation...
         this.status = { msg: 'Waiting for confirmation...', tx }
@@ -129,10 +147,16 @@ export default {
 
         // success
         this.status = { type: 'success', msg: 'Minted!' }
+        // find my mint
+        this.myMint = await this.$store.dispatch('findMint', { contract, tokenId })
       } catch (e) {
         console.error(e)
         this.status = { type: 'error', msg: e.message }
       }
+    },
+
+    goToMinted () {
+      return this.$router.push({ name: 'token', params: { token: this.myMint.args.newTokenId.toString() } })
     }
   },
 

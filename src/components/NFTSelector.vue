@@ -9,13 +9,15 @@
     template(v-else)
       //- collections...
       template(v-for="(collection, i) in collections")
-        details.bg-gray-100(:class="{'bg-gray-200': i % 2 !== 0}")
+        nft-selector-collection.bg-gray-100(:collection="collection", :class="{'bg-gray-200': i % 2 !== 0}", v-on="$listeners")
+        //- details.bg-gray-100(:class="{'bg-gray-200': i % 2 !== 0}")
           summary.h-24.flex.items-center.justify-center.relative.cursor-pointer
             | {{ collection.name }} <sup class="ml-1">{{ collection.assets.length }}</sup>
             .absolute.top-0.right-0.h-full.flex.items-center.text-xs
               .mr-5.opacity-50 0/88
               svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
+          div.text-center {{ collection.address }}
           ul.w-full.overflow-x-scroll.whitespace-no-wrap.scrollbars-hidden
             //- assets...
             li.inline-block.px-8.py-7(v-for="asset in collection.assets", :class="{'bg-yellow-500': isSelected(asset) }")
@@ -32,11 +34,10 @@
 </template>
 
 <script>
-import SvgChevronDown from '@/components/SvgChevronDown'
-
+import NftSelectorCollection from '@/components/NFTSelectorCollection'
 export default {
   name: 'NFTSelector',
-  components: { SvgChevronDown },
+  components: { NftSelectorCollection },
   props: ['address', 'selection'],
 
   created () {
@@ -51,31 +52,32 @@ export default {
   },
 
   methods: {
-    isSelected (asset) {
-      return this.selection?.id === asset.id
-    },
-
     async getCollections () {
       try {
         this.status = 'Loading...'
 
         // fetch...
-        const assets = await this.$store.dispatch('wallet/getAssetsFromOpenSea', { address: this.address })
+        const assets = await this.$store.dispatch('assets/getAssetsFromOpenSea', { address: this.address })
 
         // get names
-        let collections = assets.map(asset => asset.collectionName)
+        let collections = assets.map(asset => asset.collection.name)
         // dedupe names
         collections = [...new Set(collections)] // dedupe
         // fill with assets
-        collections = collections.map(name => ({
-          name,
-          assets: assets
-            .filter(asset => asset.collectionName === name)
+        collections = collections.map(name => {
+          const colAssets = assets
+            .filter(asset => asset.collection.name === name)
             .map(asset => ({
-              id: asset.collectionName + asset.tokenId,
+              id: asset.collection.name + asset.tokenId,
               ...asset
             }))
-        }))
+
+          return {
+            name,
+            address: colAssets[0].collection.address,
+            assets: colAssets
+          }
+        })
 
         this.collections = collections
       } catch (e) {
@@ -86,9 +88,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="postcss">
-details[open] summary .transform{
-  @apply rotate-180
-}
-</style>

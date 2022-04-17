@@ -31,6 +31,7 @@ export default {
       try {
         await this.$store.dispatch('connect')
       } catch (e) {
+        console.error(e)
         if (e !== 'Modal closed by user') {
           alert('Error connecting wallet!')
         }

@@ -28,12 +28,10 @@ export default {
   },
   created () {
     this.$store.dispatch('init')
-    // this.$store.dispatch('prismic/getDocs')
+    this.$store.dispatch('getCollectionsList')
   },
   mounted () {
     return document.getElementById('loading')?.remove()
-    // this.$store.dispatch('wallet/init')
-    // this.begin()
   }
 }
 </script>

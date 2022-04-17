@@ -17,7 +17,7 @@
           filters(v-show="$route.name === 'filter'", key="filter")
           //- set-view(v-if="$route.name === 'set'", key="set")
           mint-view(v-if="$route.name === 'mint'", key="mint")
-          work-view(v-else-if="activeWork", :key="$route.params.work")
+          nft-view(v-else-if="activeWork", :key="$route.params.work")
 
       //- (close panel overlay)
       transition(name="fade")
@@ -149,7 +149,7 @@ import svgFleuron from '@/components/SVG-Fleuron'
 import Btn from '@/components/Btn'
 // import WorkView from '@/views/Work'
 import MintView from '@/views/Mint'
-import WorkView from '@/views/NFT'
+import NftView from '@/views/NFT'
 import Info from '@/views/Info'
 import Filters from '@/views/Filters'
 import SetView from '@/views/Set'
@@ -167,7 +167,7 @@ import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
-  components: { SliceTile, MintView, WorkView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX },
+  components: { SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX },
   data () {
     return {
       squish: false,

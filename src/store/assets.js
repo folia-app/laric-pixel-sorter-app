@@ -7,6 +7,11 @@ export default {
   },
 
   getters: {
+    contracts (state, getters, rootState) {
+      // format to just addresses
+      const contracts = rootState.collectionsList?.map(row => row[0].toLowerCase())
+      return contracts
+    },
     openSeaAPIDomain (state, getters, rootState) {
       const prefix = rootState.networkId === 1 ? '' : 'testnets-'
       return `https://${prefix}api.opensea.io`
@@ -31,16 +36,23 @@ export default {
         }
 
         // params
+
         address = address.toLowerCase()
         cursor = cursor ? `&cursor=${cursor}` : ''
         const limit = '&limit=50'
+        // filter by our contracts
+        if (!getters.contracts) await dispatch('getCollectionsList', null, { root: true })
+        const contracts = getters.contracts.map(addr => '&asset_contract_addresses=' + addr.toLowerCase()).join('')
 
         // fetch...
-        const json = await fetchFromOpenSea(`${getters.openSeaAPIDomain}/api/v1/assets?owner=${address}${limit}${cursor}`)
+        const json = await fetchFromOpenSea(`${getters.openSeaAPIDomain}/api/v1/assets?owner=${address}${limit}${cursor}${contracts}`)
 
         // format
         const assets = json.assets.map(asset => ({
-          collectionName: asset.asset_contract.name,
+          collection: {
+            name: asset.asset_contract.name,
+            address: asset.asset_contract.address
+          },
           tokenId: asset.token_id,
           name: asset.name,
           image: {

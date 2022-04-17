@@ -107,7 +107,10 @@ module.exports = {
         600: '#f5f500'
       },
       red: 'red',
-      'red-duller': '#ce1212' // soldout
+      'red-duller': '#ce1212', // soldout
+      green: {
+        400: '#30cb5f'
+      }
     },
     backgroundColor: theme => theme('colors'),
     backgroundImage: {

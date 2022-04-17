@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // contracts
-import Folia from 'folia-contracts/build/contracts/Folia.json'
-import FoliaControllerV2 from 'folia-contracts/build/contracts/FoliaControllerV2.json'
-// import ReserveAuction from 'folia-contracts/build/contracts/ReserveAuction.json'
+// import Folia from 'folia-contracts/build/contracts/Folia.json'
+import Controller from '../../contracts/LTDController'
 // ethers
 import { ethers, BigNumber as bn } from 'ethers'
 // import Web3 from 'web3'
@@ -13,7 +12,7 @@ import { exception } from 'vue-gtag'
 // modules
 import prismic from './prismic'
 import auctions from './auctions'
-import wallet from './wallet'
+import assets from './assets' // connected wallet assets
 
 let provider, signer, walletProvider, initializing, web3
 
@@ -26,7 +25,7 @@ const networks = {
 
 // setup web3 modal
 const web3Modal = new Web3Modal({
-  network: 'mainnet', // optional
+  // network: 'mainnet', // optional
   cacheProvider: true, // optional
   providerOptions: { // required
     walletconnect: {
@@ -41,13 +40,18 @@ const web3Modal = new Web3Modal({
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules: { prismic, auctions, wallet },
+  modules: { prismic, auctions, assets },
   state: {
     address: null,
     networkId: null,
 
-    foliaContract: null,
-    foliaControllerContract: null,
+    ltdContract: null,
+    controllerContract: null,
+
+    mintPrice: undefined,
+    collectionsList: undefined,
+
+    // old
     reserveAuctionContract: null,
 
     works: [],
@@ -67,7 +71,7 @@ export default new Vuex.Store({
     },
     addrShort: () => (addr) => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '...',
     userBalance: (state) => (addr) => provider?.getBalance(addr || state.address) || '0', // wei
-    contractAddr: (state) => state.foliaContract?.address,
+    contractAddr: (state) => state.ltdContract?.address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
     },
@@ -129,48 +133,37 @@ export default new Vuex.Store({
     SAVE_METADATA (state, metadata) {
       state.metadatas.push(metadata)
     },
-    // SET_CONTRACTS (state, { web3, networkId }) {
-    //   if (!web3) return new Error('web3 not defined')
-    //   // folia
-    //   state.foliaContract = new web3.eth.Contract(
-    //     Folia.abi,
-    //     Folia.networks[networkId].address
-    //   )
-    //   console.log('folia addr', Folia.networks[networkId].address)
-    //   // controller
-    //   state.foliaControllerContract = new web3.eth.Contract(
-    //     FoliaControllerV2.abi,
-    //     FoliaControllerV2.networks[networkId].address
-    //   )
-    //   console.log('controller addr', FoliaControllerV2.networks[networkId].address)
-    //   // auctions
-    //   if (ReserveAuction.networks[networkId]) {
-    //     state.reserveAuctionContract = new web3.eth.Contract(
-    //       ReserveAuction.abi,
-    //       ReserveAuction.networks[networkId].address
-    //     )
-    //     console.log('auction addr', ReserveAuction.networks[networkId].address)
-    //   }
-    // },
+
     SET_CONTRACTS_ETHERS (state, { chainId, provider }) {
       if (!networks[chainId]) {
         console.warn(`Unsupported network: (id: ${chainId}). Default will be used for contracts (id: 1)`)
         chainId = 1
       }
-      // folia
-      state.foliaContract = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
-      console.log('folia:', Folia.networks[chainId].address)
+      // nft
+      // state.ltdContract = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
+      // console.log('folia:', Folia.networks[chainId].address)
+
       // controller
-      state.foliaControllerContract = new ethers.Contract(FoliaControllerV2.networks[chainId].address, FoliaControllerV2.abi, provider)
-      console.log('controller:', FoliaControllerV2.networks[chainId].address)
+      state.controllerContract = new ethers.Contract(Controller.networks[chainId].address, Controller.abi, provider)
+      console.log('controller:', Controller.networks[chainId].address)
+
       // auctions
       // state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
       // console.log('auctions:', ReserveAuction.networks[chainId].address)
     },
+
     SAVE_ADDRESS (state, { address, ens, openSea }) {
       const addrs = JSON.parse(JSON.stringify(state.addresses))
       addrs[address.toLowerCase()] = { ens, openSea }
       state.addresses = addrs
+    },
+
+    SET_MINT_PRICE (state, bigNumber) {
+      state.mintPrice = bigNumber
+    },
+
+    SAVE_COLLECTIONS_LIST (state, contracts) {
+      state.collectionsList = contracts
     }
   },
   actions: {
@@ -319,118 +312,99 @@ export default new Vuex.Store({
       })
     },
 
-    /* setup web3, contracts */
-    // async init ({ state, commit, dispatch }) {
-    //   try {
-    //     // auto-connect?
-    //     if (web3Modal.cachedProvider) {
-    //       await dispatch('connect')
-    //     }
-
-    //     // setup web3
-    //     if (!web3) {
-    //       if (provider) {
-    //         web3 = new Web3(provider)
-    //       } else {
-    //         const n = process.env.NODE_ENV === 'development' ? 'rinkeby' : 'mainnet'
-    //         web3 = new Web3(new Web3.providers.WebsocketProvider(networks[n].infura))
-    //       }
-    //     }
-
-    //     // setup contracts
-    //     const networkId = state.networkId || await web3.eth.net.getId() || networks.mainnet.id
-    //     console.log('network:', networkId)
-    //     commit('SET_NETWORK', networkId)
-    //     commit('SET_CONTRACTS', { web3, networkId })
-
-    //     // listen to provider events
-    //     dispatch('listenToProvider')
-    //   } catch (e) {
-    //     console.error('@init', e)
-    //   }
-    // },
-
+    // remove eventually
     getWeb3 () {
       // TODO better handler for this
       return web3
     },
 
-    /* connect wallet */
-    // async connect ({ commit, dispatch }) {
-    //   try {
-    //     // connect and update provider, web3
-    //     provider = await web3Modal.connect()
-    //     web3 = new Web3(provider)
-    //     // save account
-    //     const accounts = await web3.eth.getAccounts()
-    //     const address = accounts[0]
-    //     const networkId = await web3.eth.net.getId()
-    //     // const chainId = await web3.eth.chainId(); // not a function??
-    //     commit('SIGN_IN', address)
-    //     commit('SET_NETWORK', networkId)
-    //   } catch (e) {
-    //     console.error('@connect', e)
-    //     // clear in case
-    //     web3Modal.clearCachedProvider()
-    //   }
-    // },
+    async getCollectionsList ({ state, commit, dispatch }) {
+      try {
+        if (!state.controllerContract) await dispatch('init')
+        // fetch all events
+        const events = await state.controllerContract.queryFilter('newContract')
+        // TODO factor REMOVE CONTRACT?
+        // format
+        const list = events.map(event => event.args)
+        commit('SAVE_COLLECTIONS_LIST', list)
+        return list
+      } catch (e) {
+        console.error(e)
+      }
+    },
 
-    /* disconnect wallet */
-    // disconnect ({ commit }) {
-    //   // clear so they can re-select from scratch
-    //   web3Modal.clearCachedProvider()
-    //   // manually remove WC so can choose new account
-    //   localStorage.removeItem('walletconnect')
-    //   // provider.off('accountsChanged')
-    //   // provider.off('disconnect')
-    //   commit('SIGN_OUT')
-    // },
+    async getMintPrice ({ state, commit, dispatch }) {
+      try {
+        // saved?
+        if (state.mintPrice) return state.mintPrice
+        //
+        if (!state.controllerContract) await dispatch('init')
+        // fetch...
+        const price = await state.controllerContract.price()
+        // save
+        commit('SET_MINT_PRICE', price)
+        return price
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
 
-    /* wallet events */
-    // listenToProvider ({ commit, dispatch }) {
-    //   if (!provider?.on) return
+    async getEditionsLeft ({ state, dispatch }, contract) {
+      try {
+        if (!state.controllerContract) await dispatch('init')
+        return state.controllerContract.editionsLeft(contract)
+      } catch (e) {
+        console.error(e)
+      }
+    },
 
-    //   // account changed (or disconnected)
-    //   provider.on('accountsChanged', accounts => {
-    //     console.log('accountsChanged', accounts)
-    //     if (!accounts.length) {
-    //       return dispatch('disconnect')
-    //     }
-    //     commit('SIGN_IN', accounts[0])
-    //   })
+    async mint ({ state, dispatch }, { contract, tokenId }) {
+      try {
+        // wait for init?
+        if (!state.controllerContract) await dispatch('init')
 
-    //   // changed network
-    //   provider.on('chainChanged', chainId => {
-    //     console.log('network changed', chainId)
-    //     // reload page so data is correct...
-    //     window.location.reload()
-    //   })
+        // connect wallet?
+        if (!state.address || !signer) await dispatch('connect')
 
-    //   // random disconnection? (doesn't fire on account disconnect)
-    //   provider.on('disconnect', error => {
-    //     console.error('disconnected?', error)
-    //     dispatch('disconnect')
-    //   })
-    // },
+        // setup
+        const contractSigner = state.controllerContract.connect(signer)
+        const price = await dispatch('getMintPrice')
+        console.log('price', price.toString())
+        // confirm...
+        const tx = await contractSigner.buy(state.address, contract, tokenId, { value: price.toString() })
+        return tx
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
 
     /* buy artwork */
-    // async buy ({ state, dispatch }, workId) {
+    // async buy ({ state, dispatch, rootGetters }, workId) {
     //   try {
     //     const work = await dispatch('getWork', { id: workId, flush: true })
     //     // !! unavailable
     //     if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
     //     if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${workId} is sold out`)
     //     if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+
+    //     // TODO insuff balance
+
     //     // wallet connected ?
-    //     if (!state.address) {
-    //       await dispatch('connect')
-    //     }
-    //     // buy
-    //     await state.foliaControllerContract.methods
-    //       .buy(state.address, workId)
-    //       .send({ from: state.address, value: work.price })
+    //     if (!state.address || !signer) await dispatch('connect')
+
+    //     // !! insufficient balance
+    //     const balance = await rootGetters.userBalance()
+    //     if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
+
+    //     // sign...
+    //     const contractSigner = state.controllerContract.connect(signer)
+    //     // tx
+    //     return contractSigner.buy(state.address, workId, { value: work.price })
+
     //     // refresh work data for app
-    //     dispatch('getWork', { id: workId, flush: true })
+    //     // dispatch('getWork', { id: workId, flush: true })
     //   } catch (e) {
     //     console.error('@buy:', e)
     //     // track
@@ -441,42 +415,6 @@ export default new Vuex.Store({
     //     }
     //   }
     // },
-
-    /* buy artwork */
-    async buy ({ state, dispatch, rootGetters }, workId) {
-      try {
-        const work = await dispatch('getWork', { id: workId, flush: true })
-        // !! unavailable
-        if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
-        if (Number(work.printed) >= Number(work.editions)) throw new Error(`!! Work ${workId} is sold out`)
-        if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
-
-        // TODO insuff balance
-
-        // wallet connected ?
-        if (!state.address || !signer) await dispatch('connect')
-
-        // !! insufficient balance
-        const balance = await rootGetters.userBalance()
-        if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
-
-        // sign...
-        const contractSigner = state.foliaControllerContract.connect(signer)
-        // tx
-        return contractSigner.buy(state.address, workId, { value: work.price })
-
-        // refresh work data for app
-        // dispatch('getWork', { id: workId, flush: true })
-      } catch (e) {
-        console.error('@buy:', e)
-        // track
-        exception({ description: `@buy: ${e.message}`, fatal: false })
-        // TODO - more elegant UX error ?
-        if (e.message?.includes('!! ')) {
-          alert(e.message.replace('!! ', ''))
-        }
-      }
-    },
 
     /* buy by ID */
     // async buyByID ({ state, dispatch, rootGetters }, { tokenId }) {
@@ -503,7 +441,7 @@ export default new Vuex.Store({
     //     if (insufficientFunds) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
 
     //     // buy
-    //     await state.foliaControllerContract.methods
+    //     await state.controllerContract.methods
     //       .buyByID(state.address, workId, editionId)
     //       .send({ from: state.address, value: work.price })
     //     // refresh work data for app
@@ -542,7 +480,7 @@ export default new Vuex.Store({
         if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
 
         // sign...
-        const contractSigner = state.foliaControllerContract.connect(signer)
+        const contractSigner = state.controllerContract.connect(signer)
         // tx
         return contractSigner.buyByID(state.address, workId, editionId, { value: work.price })
 
@@ -564,14 +502,14 @@ export default new Vuex.Store({
     //   let work = state.works.find(work => work.id === id)
     //   if (!flush && work) return work
 
-    //   if (!state.foliaControllerContract) {
+    //   if (!state.controllerContract) {
     //     console.warn('controller not set yet')
     //     return
     //   }
     //   // get new data
     //   if (id && !isNaN(id)) {
     //     try {
-    //       work = await state.foliaControllerContract.methods.works(id).call()
+    //       work = await state.controllerContract.methods.works(id).call()
     //       work = { id, ...work } // add id
     //       commit('SAVE_WORK', work)
     //     } catch (e) {
@@ -593,12 +531,12 @@ export default new Vuex.Store({
           throw new Error(`invalid work id: ${id}`)
         }
 
-        if (!state.foliaControllerContract) {
+        if (!state.controllerContract) {
           await dispatch('init')
         }
 
         // fetch...
-        work = await state.foliaControllerContract.works(id)
+        work = await state.controllerContract.works(id)
         work = { id, ...work } // add id
         // save
         commit('SAVE_WORK', work)
@@ -654,8 +592,8 @@ export default new Vuex.Store({
     //     let owner = token && token[1]
     //     if (owner) return owner
     //     // get new data
-    //     if (state.foliaContract) {
-    //       owner = await state.foliaContract.methods.ownerOf(tokenId).call()
+    //     if (state.ltdContract) {
+    //       owner = await state.ltdContract.methods.ownerOf(tokenId).call()
     //       commit('SAVE_TOKEN', [tokenId, owner])
     //       return owner
     //     }
@@ -675,8 +613,8 @@ export default new Vuex.Store({
         let owner = token && token[1]
         if (owner) return owner
         // fetch...
-        if (!state.foliaContract) await dispatch('init')
-        owner = await state.foliaContract.ownerOf(tokenId)
+        if (!state.ltdContract) await dispatch('init')
+        owner = await state.ltdContract.ownerOf(tokenId)
         // save
         commit('SAVE_TOKEN', [tokenId, owner])
         return owner
@@ -754,7 +692,7 @@ export default new Vuex.Store({
       }
     },
 
-    async resolveAddress ({ state, getters, commit, dispatch }, { address }) {
+    async resolveAddress ({ state, getters, commit, dispatch }, { address, queryOpenSea = false }) {
       try {
         // sanitize
         address = (address || '').toLowerCase()
@@ -770,7 +708,7 @@ export default new Vuex.Store({
 
         // fetch from opensea...
         let openSea
-        if (!ens) {
+        if (!ens && queryOpenSea) {
           openSea = await dispatch('getAddressOpenSeaName', address)
         }
 

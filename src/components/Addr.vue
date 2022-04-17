@@ -21,7 +21,7 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('resolveAddress', { address: this.address })
+    this.$store.dispatch('resolveAddress', { address: this.address, queryOpenSea: this.openSeaEnabled })
   }
 }
 </script>

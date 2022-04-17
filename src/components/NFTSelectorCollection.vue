@@ -6,7 +6,8 @@
         .mr-5.opacity-50 {{ editionsLeft }}/88
         svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
-    div.text-center {{ collection.address }}
+    //- div.text-center {{ collection.address }}
+
     ul.w-full.overflow-x-scroll.whitespace-no-wrap.scrollbars-hidden
       //- assets...
       li.inline-block.px-8.py-7(v-for="asset in collection.assets", :class="{'bg-yellow-500': isSelected(asset) }")

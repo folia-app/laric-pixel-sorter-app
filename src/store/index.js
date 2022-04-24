@@ -771,21 +771,41 @@ export default new Vuex.Store({
       }
     },
 
-    async getAddressOpenSeaName ({ state, dispatch }, address) {
+    async fetchFromOpenSea ({ state, dispatch }, { path, priority = 1 }) {
       try {
         if (!state.networkId) await dispatch('init')
 
-        const prefix = state.networkId === 4 ? 'testnets-' : ''
-        let resp = await fetch(`https://${prefix}api.opensea.io/api/v1/account/${address}`)
+        const prefix = state.networkId === 1 ? '' : 'testnets-'
+        const domain = `https://${prefix}api.opensea.io`
 
-        // throttled? retry in 1sec
-        if (resp.status === 429) {
-          setTimeout(() => {
-            return dispatch('getAddressOpenSeaName', address)
-          }, 1000)
+        // fetch...
+        const resp = await fetch(domain + path, {
+          headers: {
+            // "X-API-KEY": "2d9c3cb197314169a26448452856faec"
+          }
+        })
+
+        if (resp.status === 200) {
+          // good!
+          const json = await resp.json()
+          return json
+        } else if (resp.status === 429) {
+          // throttled... wait a second
+          return new Promise(resolve => setTimeout(() => resolve(dispatch('fetchFromOpenSea', { path, priority })), 1000 * priority))
+        } else {
+          // other error
+          const text = await resp.text()
+          throw new Error('OpenSea API:' + text)
         }
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
 
-        resp = await resp.json()
+    async getAddressOpenSeaName ({ state, dispatch }, address) {
+      try {
+        const resp = await dispatch('fetchFromOpenSea', { path: `/api/v1/account/${address}`, priority: 1.1 })
 
         return resp.data?.user?.username
       } catch (e) {

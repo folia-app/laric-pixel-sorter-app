@@ -41,6 +41,7 @@
               .h-20.flex-1.flex.items-center
                 div <b>Decomposer</b> mints strata of old.
 
+            //- (info btn)
             button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-200(@click="openInfoOverlay")
               | Info
 
@@ -52,51 +53,6 @@
               router-link(to="/mint").text-sm.uppercase.h-20.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.relative.mouse_hover_bg-yellow-600
                 div Mint
                 .absolute.top-0.right-0.h-full.flex.items-center.w-20.justify-center &rarr;
-
-        //- (info overlay)
-        .fixed.z-40.top-0.left-0.w-full.h-full.overflow-y-scroll(ref="infoEl", :class="{'pointer-events-none': !infoVisible}")
-          //- (reveals as background fades in)
-          .relative
-            //- info card
-            .relative.z-10.bg-gray-200(@click.stop, v-show="infoVisible")
-              .px-10.py-10.leading-normal
-                p.pr-10 A new interactive NFT collection by artist #[a.font-bold.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/", target="_blank", rel="noopener noreferrer") Oliver Laric].
-                p.mt-em In Decomposer, collectors mint new "decomposed" NFTs from #[b their own collection]. Each pixel will be arranged from lightest to darkness&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
-
-                p.mt-em At this time, only a <b>selected list</b> of NFT collections may be minted, with a limit of <b>88 mints per collection</b>, and max of <b>888 total mints</b> in the collection:
-
-                .mt-em.relative(:class="{'max-h-56 overflow-hidden': whitelistExcerpted}")
-                  ul.text-columns-2.md_text-columns-3.lg_text-columns-4.pb-16
-                    li(v-for="item in whitelist")
-                      template(v-if="item[1]")
-                        a(:href="item[1]", target="_blank", rel="noopener")
-                         span.border-b.border-dashed.hover_border-solid.border-gray-600 {{ item[0] }}
-                         span(style="font-size:0.8em") &nbsp;↗
-                      template(v-else)
-                        | {{ item[0] }}
-
-                  .absolute.bottom-0.left-0.w-full.pointer-events-none
-                    .h-48(:class="{'bg-gradient-to-b from-transparent to-gray-200': whitelistExcerpted}")
-                    button.py-1.bg-gray-200.text-xxs.uppercase.tracking-wide.flex.w-full.justify-center.pointer-events-auto(@click="whitelistExcerpted = !whitelistExcerpted")
-                      .py-2.px-4.leading-none.rounded-full.border-current.bg-gray-300.hover_bg-gray-400
-                        | {{ whitelistExcerpted ? 'MORE' : 'LESS' }}
-
-              footer.flex.w-full
-                button.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-300.mouse_hover_bg-gray-400(@click="infoVisible = !infoVisible")
-                  | Contract &nbsp;↗
-
-                router-link(to="/filter").text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-350.mouse_hover_bg-gray-400
-                  | OpenSea &nbsp;↗
-
-              //- close btn
-              button.absolute.top-0.right-0.w-20.h-20.flex.items-center.justify-center.bg-black-a08(@click.stop="closeInfoOverlay")
-                svg-x.w-5.h-5(strokeWidth="1.15")
-
-            //- scroll off area
-            observer#info-scroll-end.pointer-events-none(style="height:133vh", :threshold="0.75", @visible="closeInfoOverlay")
-
-            //- background
-            button.block.absolute.overlay.bg-black-a60.transition.duration-1000(:class="{'opacity-0 pointer-events-none': !infoVisible}", @click.stop="infoVisible = false", aria-label="Close Info")
 
         //- token grid ====================================
 
@@ -129,6 +85,51 @@
 
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
+
+    //- (info overlay)
+    .fixed.z-40.overlay.overflow-y-scroll.scrollbars-hidden(ref="infoEl", :class="{'pointer-events-none': !infoVisible}")
+      //- (reveals as background fades in)
+      .relative
+        //- info card
+        .relative.z-10.bg-gray-200(@click.stop, v-show="infoVisible")
+          .px-10.py-10.leading-normal
+            p.pr-10 A new interactive NFT collection by artist #[a.font-bold.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/", target="_blank", rel="noopener noreferrer") Oliver Laric].
+            p.mt-em In Decomposer, collectors mint new "decomposed" NFTs from #[b their own collection]. Each pixel will be arranged from lightest to darkness&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
+
+            p.mt-em At this time, only a <b>selected list</b> of NFT collections may be minted, with a limit of <b>88 mints per collection</b>, and max of <b>888 total mints</b> in the collection:
+
+            .mt-em.relative(:class="{'max-h-56 overflow-hidden': whitelistExcerpted}")
+              ul.text-columns-2.md_text-columns-3.lg_text-columns-4.pb-16
+                li(v-for="item in whitelist")
+                  template(v-if="item[1]")
+                    a(:href="item[1]", target="_blank", rel="noopener")
+                     span.border-b.border-dashed.hover_border-solid.border-gray-600 {{ item[0] }}
+                     span(style="font-size:0.8em") &nbsp;↗
+                  template(v-else)
+                    | {{ item[0] }}
+
+              .absolute.bottom-0.left-0.w-full.pointer-events-none
+                .h-48(:class="{'bg-gradient-to-b from-transparent to-gray-200': whitelistExcerpted}")
+                button.py-1.bg-gray-200.text-xxs.uppercase.tracking-wide.flex.w-full.justify-center.pointer-events-auto(@click="whitelistExcerpted = !whitelistExcerpted")
+                  .py-2.px-4.leading-none.rounded-full.border-current.bg-gray-300.hover_bg-gray-400
+                    | {{ whitelistExcerpted ? 'MORE' : 'LESS' }}
+
+          footer.flex.w-full
+            button.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-300.mouse_hover_bg-gray-400(@click="infoVisible = !infoVisible")
+              | Contract &nbsp;↗
+
+            router-link(to="/filter").text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-350.mouse_hover_bg-gray-400
+              | OpenSea &nbsp;↗
+
+          //- close btn
+          button.absolute.top-0.right-0.w-20.h-20.flex.items-center.justify-center.bg-black-a08(@click.stop="closeInfoOverlay")
+            svg-x.w-5.h-5(strokeWidth="1.15")
+
+        //- scroll off area
+        observer#info-scroll-end.pointer-events-none(style="height:133vh", :threshold="0.75", @visible="closeInfoOverlay")
+
+        //- background
+        button.block.absolute.overlay.bg-black-a60.transition.duration-1000(:class="{'opacity-0 pointer-events-none': !infoVisible}", @click.stop="infoVisible = false", aria-label="Close Info")
 
 </template>
 

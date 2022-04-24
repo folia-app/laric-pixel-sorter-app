@@ -11,10 +11,6 @@ export default {
       // format to just addresses
       const contracts = rootState.collectionsList?.map(row => row[0].toLowerCase())
       return contracts
-    },
-    openSeaAPIDomain (state, getters, rootState) {
-      const prefix = rootState.networkId === 1 ? '' : 'testnets-'
-      return `https://${prefix}api.opensea.io`
     }
   },
 
@@ -36,7 +32,6 @@ export default {
         }
 
         // params
-
         address = address.toLowerCase()
         cursor = cursor ? `&cursor=${cursor}` : ''
         const limit = '&limit=50'
@@ -45,7 +40,7 @@ export default {
         const contracts = getters.contracts.map(addr => '&asset_contract_addresses=' + addr.toLowerCase()).join('')
 
         // fetch...
-        const json = await fetchFromOpenSea(`${getters.openSeaAPIDomain}/api/v1/assets?owner=${address}${limit}${cursor}${contracts}`)
+        const json = await dispatch('fetchFromOpenSea', { path: `/api/v1/assets?owner=${address}${limit}${cursor}${contracts}` }, { root: true })
 
         // format
         const assets = json.assets.map(asset => ({
@@ -73,33 +68,5 @@ export default {
         console.error(e)
       }
     }
-  }
-}
-
-// HELPERS
-
-export async function fetchFromOpenSea (url) {
-  try {
-    const resp = await fetch(url, {
-      // headers: {
-      // "X-API-KEY: [YOUR_API_KEY]"
-      // }
-    })
-
-    if (resp.status === 200) {
-      // good!
-      const json = await resp.json()
-      return json
-    } else if (resp.status === 429) {
-      // throttled... wait a second
-      return new Promise(resolve => setTimeout(() => resolve(fetchFromOpenSea(url)), 1000))
-    } else {
-      // other error
-      const text = await resp.text()
-      throw new Error('OpenSea API:' + text)
-    }
-  } catch (e) {
-    console.error(e)
-    throw e
   }
 }

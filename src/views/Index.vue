@@ -17,7 +17,7 @@
           filters(v-show="$route.name === 'filter'", key="filter")
           //- set-view(v-if="$route.name === 'set'", key="set")
           mint-view(v-if="$route.name === 'mint'", key="mint")
-          nft-view(v-else-if="$route.name === 'work'", :key="$route.params.work")
+          nft-view(v-else-if="$route.name === 'token'", :key="$route.params.token")
 
       //- (close panel overlay)
       transition(name="fade")

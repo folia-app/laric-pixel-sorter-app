@@ -33,16 +33,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'MintedResults',
-  data () {
-    return {
-      minted: null
-    }
+  computed: {
+    ...mapState(['minted'])
   },
-  async created () {
-    this.minted = await this.$store.dispatch('getMinted')
-    console.log(this.minted)
+  created () {
+    this.$store.dispatch('getMinted', { cached: false })
   }
 }
 </script>

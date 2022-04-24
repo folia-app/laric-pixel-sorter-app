@@ -1,12 +1,12 @@
 <template lang="pug">
-  span.addr {{ name }}
+  span.addr {{ name || '...' }}
 </template>
 
 <script>
 export default {
   name: 'Addr',
   props: {
-    address: { type: String, default: '-' },
+    address: { type: String, default: undefined },
     short: { type: Boolean, default: true },
     openSeaEnabled: { type: Boolean, default: false }
   },
@@ -21,7 +21,17 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('resolveAddress', { address: this.address, queryOpenSea: this.openSeaEnabled })
+    this.resolveAddress()
+  },
+  watch: {
+    address () {
+      this.resolveAddress()
+    }
+  },
+  methods: {
+    resolveAddress () {
+      return this.address && this.$store.dispatch('resolveAddress', { address: this.address, queryOpenSea: this.openSeaEnabled })
+    }
   }
 }
 </script>

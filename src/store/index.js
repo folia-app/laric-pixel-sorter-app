@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // contracts
-// import Folia from 'folia-contracts/build/contracts/Folia.json'
+import NFTContract from '../../contracts/LTD'
 import Controller from '../../contracts/LTDController'
 // ethers
 import { ethers, BigNumber as bn } from 'ethers'
@@ -47,17 +47,19 @@ export default new Vuex.Store({
     networkId: null, // wallet network
     appNetworkId,
 
-    ltdContract: null,
+    nftContract: null,
     controllerContract: null,
 
     mintPrice: undefined,
     collectionsList: undefined,
 
+    minted: null,
+    tokens: [],
+
     // old
     reserveAuctionContract: null,
 
     works: [],
-    tokens: [],
     metadatas: [],
     addresses: {}
   },
@@ -73,7 +75,7 @@ export default new Vuex.Store({
     },
     addrShort: () => (addr) => addr ? addr.slice(0, 6) + '...' + addr.slice(-4) : '...',
     userBalance: (state) => (addr) => provider?.getBalance(addr || state.address) || '0', // wei
-    contractAddr: (state) => state.ltdContract?.address,
+    contractAddr: (state) => state.nftContract?.address,
     isSoldOut: () => (work) => {
       return work && Number(work.editions) && Number(work.printed) >= Number(work.editions)
     },
@@ -138,12 +140,12 @@ export default new Vuex.Store({
 
     SET_CONTRACTS_ETHERS (state, { chainId, provider }) {
       if (!networks[chainId]) {
-        console.warn(`Unsupported network: (id: ${chainId}). Default will be used for contracts (id: 1)`)
-        chainId = 1
+        console.warn(`Unsupported network: (id: ${chainId}). Default will be used for contracts (id: ${appNetworkId})`)
+        chainId = appNetworkId
       }
       // nft
-      // state.ltdContract = new ethers.Contract(Folia.networks[chainId].address, Folia.abi, provider)
-      // console.log('folia:', Folia.networks[chainId].address)
+      state.nftContract = new ethers.Contract(NFTContract.networks[chainId].address, NFTContract.abi, provider)
+      console.log('token:', NFTContract.networks[chainId].address)
 
       // controller
       state.controllerContract = new ethers.Contract(Controller.networks[chainId].address, Controller.abi, provider)
@@ -166,6 +168,10 @@ export default new Vuex.Store({
 
     SAVE_COLLECTIONS_LIST (state, contracts) {
       state.collectionsList = contracts
+    },
+
+    SAVE_MINTED (state, minted) {
+      state.minted = minted
     }
   },
   actions: {
@@ -331,11 +337,21 @@ export default new Vuex.Store({
       }
     },
 
-    async getMinted ({ dispatch }) {
+    async getMinted ({ state, commit, dispatch }, { cached = false }) {
       try {
+        if (cached && state.minted) {
+          return state.minted
+        }
+        // get all mint events...
         const events = await dispatch('getMintedEvents')
         // format
-        const minted = events.reverse().map(event => event.args)
+        const minted = events.reverse().map(event => ({
+          getTx: event.getTransaction,
+          contractAddress: event.args[0],
+          tokenId: event.args[1].toString().toLowerCase(),
+          newTokenId: event.args[2].toString().toLowerCase()
+        }))
+        commit('SAVE_MINTED', minted)
         return minted
       } catch (e) {
         console.error(e)
@@ -623,26 +639,6 @@ export default new Vuex.Store({
       }
     },
 
-    // /* get owner by token id */
-    // async getNFTOwnerByTokenId ({ state, commit }, tokenId) {
-    //   try {
-    //     const token = state.tokens.find(token => token[0] === tokenId) || []
-    //     let owner = token && token[1]
-    //     if (owner) return owner
-    //     // get new data
-    //     if (state.ltdContract) {
-    //       owner = await state.ltdContract.methods.ownerOf(tokenId).call()
-    //       commit('SAVE_TOKEN', [tokenId, owner])
-    //       return owner
-    //     }
-    //     return null
-    //   } catch (e) {
-    //     // seems to error if token doesn't exist...
-    //     console.error("get owner error / token doesn't exist?", tokenId, e)
-    //     return 0
-    //   }
-    // }
-
     /* read owner by token id from chain */
     async getNFTOwnerByTokenId ({ state, commit, dispatch }, tokenId) {
       try {
@@ -651,15 +647,15 @@ export default new Vuex.Store({
         let owner = token && token[1]
         if (owner) return owner
         // fetch...
-        if (!state.ltdContract) await dispatch('init')
-        owner = await state.ltdContract.ownerOf(tokenId)
+        if (!state.nftContract) await dispatch('init')
+        owner = await state.nftContract.ownerOf(tokenId)
         // save
         commit('SAVE_TOKEN', [tokenId, owner])
         return owner
       } catch {
         // seems to error if token doesn't exist...
         console.warn(`get owner error / token doesn't exist? (${tokenId})`)
-        return 0
+        return null
       }
     },
 
@@ -732,8 +728,14 @@ export default new Vuex.Store({
 
     async resolveAddress ({ state, getters, commit, dispatch }, { address, queryOpenSea = false }) {
       try {
+        if (!address) {
+          // console.warn('No address provided')
+          return undefined
+        }
+
         // sanitize
-        address = (address || '').toLowerCase()
+        address = address.toLowerCase()
+
         // saved?
         const saved = state.addresses[address]
         if (saved && saved.ens !== undefined) {
@@ -781,6 +783,7 @@ export default new Vuex.Store({
 
         // fetch...
         const resp = await fetch(domain + path, {
+          // method: 'GET',
           headers: {
             // "X-API-KEY": "2d9c3cb197314169a26448452856faec"
           }

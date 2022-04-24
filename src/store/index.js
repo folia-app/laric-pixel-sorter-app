@@ -22,6 +22,7 @@ const networks = {
   1: { name: 'mainnet', layer: 'ethereum', infura: `https://mainnet.infura.io/v3/${infuraProjectID}`, explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
   4: { name: 'rinkeby', layer: 'ethereum', infura: `https://rinkeby.infura.io/v3/${infuraProjectID}`, explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
 }
+const appNetworkId = process.env.VUE_APP_FALLBACK_NETWORK_ID || 1
 
 // setup web3 modal
 const web3Modal = new Web3Modal({
@@ -43,7 +44,8 @@ export default new Vuex.Store({
   modules: { prismic, auctions, assets },
   state: {
     address: null,
-    networkId: null,
+    networkId: null, // wallet network
+    appNetworkId,
 
     ltdContract: null,
     controllerContract: null,
@@ -207,9 +209,8 @@ export default new Vuex.Store({
           provider = new ethers.providers.Web3Provider(window.ethereum)
         } else {
           // infura fallback
-          const fallbackChainID = process.env.VUE_APP_FALLBACK_NETWORK_ID || 1
-          console.log(process.env.VUE_APP_FALLBACK_NETWORK_ID)
-          provider = new ethers.getDefaultProvider(networks[fallbackChainID].infura)
+          console.log(appNetworkId)
+          provider = new ethers.getDefaultProvider(networks[appNetworkId].infura)
         }
 
         await dispatch('getNetwork', provider)

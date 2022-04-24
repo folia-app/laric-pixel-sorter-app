@@ -4,9 +4,13 @@
     .app__main.relative.z-20
       router-view
 
-    //- template(v-if="isWrongNetwork")
-      .p-8 Oops
-      .fixed.z-50.bottom-0.left-0.w-full.p-6.md_p-8.bg-yellow.text-black.text-center.-shadow-md.font-sans.text-sm.md_text-base.lg_text-lg(v-html="'Wrong&nbsp;Network&nbsp;🤖 Please&nbsp;switch&nbsp;to&nbsp;Mainnet'")
+    template(v-if="isWrongNetwork")
+      //- .p-8 Oops
+      .sticky.z-50.bottom-0.left-0.w-full.p-6.md_p-8.bg-yellow-500.text-black.text-center.-shadow-md.font-sans.text-sm.md_text-base.lg_text-lg
+        //- (v-html="'Wrong&nbsp;Network&nbsp;🤖 Please&nbsp;switch&nbsp;to&nbsp;Mainnet'")
+        | 🤖 Wrong Network!
+        //- .absolute.top-0.right-0.h-full.flex.items-center.px-6.md_p-8
+        button.absolute.top-0.right-0.h-full.bg-black-a15.px-8.md_px-12.mouse_hover_bg-black-a30(@click="switchToAppNetwork", style="font-size:0.875em") Switch
 </template>
 
 <script>
@@ -23,7 +27,25 @@ export default {
   computed: {
     isWrongNetwork () {
       const id = this.$store.state.networkId
-      return id && id !== 1 && process.env.NODE_ENV !== 'development'
+      return id && (id !== Number(this.$store.state.appNetworkId))
+    }
+  },
+  methods: {
+    async switchToAppNetwork () {
+      try {
+        if (!window.ethereum) { throw new Error('No provider to change network') }
+
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x' + this.$store.state.appNetworkId }]
+        })
+
+        // reload app
+        window.location.reload()
+      } catch (e) {
+        console.error(e)
+        alert('Could not switch networks')
+      }
     }
   },
   created () {

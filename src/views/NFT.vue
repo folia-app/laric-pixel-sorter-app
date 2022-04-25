@@ -22,7 +22,7 @@
               div
                 | #[span.text-sm from] #[router-link(to="/").text-black.border-b.border-gray-300.border-dotted.hover_border-solid Mutant Garden Seeder] #[sup.text-xs.text-gray-400 88]
               //- (minted by)
-              div(v-if="true || mintedBy && owner && owner !== mintedBy")
+              div(v-if="mintedBy && owner && owner !== mintedBy")
                 | #[span.text-sm minter] #[a.border-b.border-gray-300.border-dotted.hover_border-solid(v-if="mintedBy", :href="$store.getters.openSeaLink({ account: mintedBy })", target="_blank", rel="noopener noreferrer") #[addr.text-black(:address="mintedBy", :openSeaEnabled="true")]]#[template(v-else) ...]
               //- (owner)
               div

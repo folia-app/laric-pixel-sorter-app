@@ -378,6 +378,7 @@ export default new Vuex.Store({
         if (!state.controllerContract) await dispatch('init')
         // fetch all events
         const events = await state.controllerContract.queryFilter('newContract')
+        console.log({ newContractEvents: events })
         // TODO factor REMOVE CONTRACT?
         // format
         const list = events.map(event => event.args)

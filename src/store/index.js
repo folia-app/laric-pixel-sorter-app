@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 // contracts
-import NFTContract from '../../contracts/LTD'
-import Controller from '../../contracts/LTDController'
+import NFTContract from '../../contracts/Token'
+import Controller from '../../contracts/Controller'
 // ethers
 import { ethers, BigNumber as bn } from 'ethers'
 // import Web3 from 'web3'

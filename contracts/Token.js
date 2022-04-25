@@ -1,7 +1,7 @@
-// folia-contracts commit 59511acfe39e87ba220a627ace30ee69172efa5f
+// folia-contracts commit 0f2da58dfe82faca60bbc041c76c86e949cbf94b
 
 export default {
-  contractName: 'LTD',
+  contractName: 'Decomposer',
   abi: [
     // {
     //   "constant": true,
@@ -620,10 +620,94 @@ export default {
   ],
   networks: {
     4: {
-      events: {},
+      events: {
+        '0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0': {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              name: 'previousOwner',
+              type: 'address'
+            },
+            {
+              indexed: true,
+              name: 'newOwner',
+              type: 'address'
+            }
+          ],
+          name: 'OwnershipTransferred',
+          type: 'event'
+        },
+        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef': {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              name: 'from',
+              type: 'address'
+            },
+            {
+              indexed: true,
+              name: 'to',
+              type: 'address'
+            },
+            {
+              indexed: true,
+              name: 'tokenId',
+              type: 'uint256'
+            }
+          ],
+          name: 'Transfer',
+          type: 'event'
+        },
+        '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925': {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              name: 'owner',
+              type: 'address'
+            },
+            {
+              indexed: true,
+              name: 'approved',
+              type: 'address'
+            },
+            {
+              indexed: true,
+              name: 'tokenId',
+              type: 'uint256'
+            }
+          ],
+          name: 'Approval',
+          type: 'event'
+        },
+        '0x17307eab39ab6107e8899845ad3d59bd9653f200f220920489ca2b5937696c31': {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              name: 'owner',
+              type: 'address'
+            },
+            {
+              indexed: true,
+              name: 'operator',
+              type: 'address'
+            },
+            {
+              indexed: false,
+              name: 'approved',
+              type: 'bool'
+            }
+          ],
+          name: 'ApprovalForAll',
+          type: 'event'
+        }
+      },
       links: {},
-      address: '0x9634FDf423eb8f04858534B42282f9802CDB998C',
-      transactionHash: '0x5df574cbbef7acf12ff7f3a07e43ed1b963eb48c075a59be1c3b9a5682074f2e'
+      address: '0x17F677edC3d435cA00c438393E17110E2774B71a',
+      transactionHash: '0x58e2ebf998b5cd79a8a4ce15c1df684c38764f74662378972dd83135033890be'
     }
   }
 }

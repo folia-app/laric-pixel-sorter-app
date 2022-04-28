@@ -3,7 +3,9 @@
     summary.h-24.flex.items-center.justify-center.relative.cursor-pointer
       | {{ collectionName }} <sup class="ml-1">{{ assetsFiltered.length }}</sup>
       .absolute.top-0.right-0.h-full.flex.items-center.text-xs
-        .mr-5.opacity-50 {{ editionsLeft }}/88
+        .mr-5.opacity-50
+          template(v-if="editionsLeft === undefined") .../88
+          template(v-else) Minted {{ 88 - editionsLeft }}/88
         svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
     //- div.text-center {{ collection.address }}
@@ -30,12 +32,12 @@ export default {
   name: 'NFTSelectorCollection',
   components: { SvgChevronDown },
   props: ['collection'],
-  mounted () {
-    this.$store.dispatch('getEditionsLeft', this.collection.address)
+  async mounted () {
+    this.editionsLeft = await this.$store.dispatch('getEditionsLeft', this.collection.address.toLowerCase())
   },
   data () {
     return {
-      editionsLeft: '...'
+      editionsLeft: undefined
     }
   },
   computed: {

@@ -53,7 +53,7 @@ export default new Vuex.Store({
     mintPrice: undefined,
     collectionsList: undefined,
 
-    minted: null,
+    mints: null,
     tokens: [],
 
     // old
@@ -64,6 +64,7 @@ export default new Vuex.Store({
     addresses: {}
   },
   getters: {
+    network: (state) => networks[state.networkId],
     // weiToETH: () => (wei) => web3?.utils.fromWei(wei) ?? '-',
     weiToETH: () => wei => ethers.utils.formatUnits(wei) ?? '...',
     // ethToWei: () => (eth) => web3?.utils.toWei(eth) ?? '-',
@@ -170,8 +171,8 @@ export default new Vuex.Store({
       state.collectionsList = contracts
     },
 
-    SAVE_MINTED (state, minted) {
-      state.minted = minted
+    SAVE_MINTS (state, mints) {
+      state.mints = mints
     }
   },
   actions: {
@@ -325,34 +326,56 @@ export default new Vuex.Store({
       return web3
     },
 
+    async getControllerDeployBlock ({ state, dispatch }) {
+      let block = networks[state.networkId].controllerDeployBlock
+      if (!block) {
+        try {
+          if (!provider) await dispatch('init')
+          // get block from deploy tx
+          block = (await provider.getTransaction(Controller.networks[state.networkId].transactionHash)).blockNumber
+          // save to networks object
+          networks[state.networkId].controllerDeployBlock = block
+        } catch (e) {
+          console.error("Couldn't get deploy block: " + e)
+          block = null
+        }
+      }
+      return block
+    },
+
     async getMintedEvents ({ state, dispatch }) {
       try {
         if (!state.controllerContract) await dispatch('init')
-        const events = await state.controllerContract.queryFilter('editionBought')
-        console.log(events)
-        return events
+
+        const fromBlock = await dispatch('getControllerDeployBlock')
+
+        // get events...
+        const mintEvents = await state.controllerContract.queryFilter('editionBought', fromBlock)
+        // console.log({ mintEvents })
+
+        return mintEvents
       } catch (e) {
         console.error(e)
         throw e
       }
     },
 
-    async getMinted ({ state, commit, dispatch }, { cached = false }) {
+    async getMints ({ state, commit, dispatch }, { cached = false }) {
       try {
-        if (cached && state.minted) {
-          return state.minted
+        if (cached && state.mints) {
+          return state.mints
         }
         // get all mint events...
         const events = await dispatch('getMintedEvents')
         // format
-        const minted = events.reverse().map(event => ({
+        const mints = events.reverse().map(event => ({
           getTx: event.getTransaction,
-          contractAddress: event.args[0],
+          contractAddress: event.args[0].toLowerCase(),
           tokenId: event.args[1].toString().toLowerCase(),
           newTokenId: event.args[2].toString().toLowerCase()
         }))
-        commit('SAVE_MINTED', minted)
-        return minted
+        commit('SAVE_MINTS', mints)
+        return mints
       } catch (e) {
         console.error(e)
         throw e
@@ -376,10 +399,14 @@ export default new Vuex.Store({
     async getCollectionsList ({ state, commit, dispatch }) {
       try {
         if (!state.controllerContract) await dispatch('init')
+
+        const fromBlock = await dispatch('getControllerDeployBlock')
+
         // fetch all events
-        const events = await state.controllerContract.queryFilter('newContract')
-        console.log({ newContractEvents: events })
+        const events = await state.controllerContract.queryFilter('newContract', fromBlock)
+        // console.log({ newContractEvents: events })
         // TODO factor REMOVE CONTRACT?
+
         // format
         const list = events.map(event => event.args)
         commit('SAVE_COLLECTIONS_LIST', list)
@@ -413,6 +440,16 @@ export default new Vuex.Store({
         return resp.editionsLeft ?? -1
       } catch (e) {
         console.error(e)
+      }
+    },
+
+    async getTotalMints ({ state, dispatch }) {
+      try {
+        if (!state.nftContract) await dispatch('init')
+        return state.nftContract.totalSupply()
+      } catch (e) {
+        console.error(e)
+        throw e
       }
     },
 
@@ -811,7 +848,7 @@ export default new Vuex.Store({
 
     async getAddressOpenSeaName ({ state, dispatch }, address) {
       try {
-        const resp = await dispatch('fetchFromOpenSea', { path: `/api/v1/account/${address}`, priority: 1.1 })
+        const resp = await dispatch('fetchFromOpenSea', { path: `/api/v1/account/${address}`, priority: 1.2 })
 
         return resp.data?.user?.username
       } catch (e) {

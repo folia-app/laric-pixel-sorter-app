@@ -13,7 +13,8 @@
             | {{ !isConnected ? 'Connect your wallet to select an elligible NFT' : 'Select an elligible NFT from your wallet' }} to decompose and mint into a new NFT. You will not lose your original NFT. The new one will be minted into your wallet.
 
           .mt-3.flex.justify-end
-            .h-12.bg-gray-100.text-xs.px-6.flex.items-center Minted 0/888
+            .h-12.bg-gray-100.text-xs.px-6.flex.items-center
+              span.animate-pulse {{ totalMints !== undefined ? totalMints : '...' }}/888 Mints
 
           ol
             //- connect step
@@ -36,22 +37,22 @@
 
               //- (colletions)
               template(v-if="isConnected")
-                nft-selector(:address="$store.state.address", :selection="selection", @selected="$event => { selection = $event }", :key="$store.state.address",)
+                nft-selector(:key="$store.state.address", :address="$store.state.address", :selection="selection", @selected="$event => { selection = $event }")
 
             //- (selection overlay)
             button.absolute.overlay.bg-black-a60(v-if="selection", @click="clearSelection")
 
             //- (mint step)
-            li.sticky.bottom-0.left-0.w-full.bg-white
+            li.sticky.z-10.bottom-0.left-0.w-full.bg-white
               .bg-gray-300(:class="{'opacity-25': !isConnected, 'opacity-75': isConnected && !selection}")
                 //- (status)
                 template(v-if="status")
-                  .min-h-14.flex.items-center.justify-center.relative.bg-gray-800.text-white.text-sm(:class="{'bg-green-400': status.type === 'success', 'bg-red-duller': status.type === 'error' }")
+                  .min-h-14.flex.items-center.justify-center.relative.bg-gray-800.text-white.text-sm.px-6.py-4(:class="{'bg-green-400': status.type === 'success', 'bg-red-duller': status.type === 'error' }")
                     //- msg
-                    span(:class="{'animate-pulse': status.msg.includes('...') }") {{ status.msg }}
+                    span.break-all(:class="{'animate-pulse': status.msg.includes('...') }") {{ status.type === 'error' ? 'Error - ': '' }}{{ status.msg }}
                     //- (tx link)
                     template(v-if="status.tx")
-                     .absolute.top-0.right-0.h-full.px-10.flex.items-center.w-48.justify-center.bg-black-a45
+                     a.absolute.top-0.right-0.h-full.px-10.flex.items-center.w-48.justify-center(:href="`${$store.getters.network.explorer.domain}/tx/${status.tx.hash}`", target="_blank", rel="noopener noreferrer").bg-black-a45
                       | Tx#[span(style="font-size:0.85em") ↗]
                     //- (clear btn)
                     button.w-14.flex.items-center.justify-center.absolute.top-0.left-0.h-full(v-if="status.type === 'error'", @click="status = null")
@@ -113,7 +114,9 @@ export default {
       selection: null,
       tx: null,
       status: null,
-      myMint: null
+      myMint: null,
+      totalMints: undefined,
+      checkMintsTmOut: null
     }
   },
 
@@ -151,17 +154,32 @@ export default {
         this.myMint = await this.$store.dispatch('findMint', { contract, tokenId })
       } catch (e) {
         console.error(e)
-        this.status = { type: 'error', msg: e.message }
+        this.status = { type: 'error', msg: e.reason || e.message }
       }
     },
 
     goToMinted () {
       return this.$router.push({ name: 'token', params: { token: this.myMint.args.newTokenId.toString() } })
+    },
+
+    async getTotalMints () {
+      this.totalMints = await this.$store.dispatch('getTotalMints')
+    },
+
+    listenForMints (interval = 3000) {
+      this.checkMintsTmOut = setTimeout(() => {
+        this.getTotalMints()
+        this.listenForMints(interval)
+      }, interval)
     }
   },
 
   created () {
     this.$store.dispatch('getMintPrice')
+  },
+
+  mounted () {
+    this.listenForMints(3000)
   },
 
   watch: {
@@ -171,6 +189,10 @@ export default {
         this.status = null
       }
     }
+  },
+
+  destroyed () {
+    clearTimeout(this.checkMintsTmOut)
   }
 }
 </script>

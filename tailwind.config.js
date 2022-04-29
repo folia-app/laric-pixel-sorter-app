@@ -50,6 +50,7 @@ module.exports = {
       'lh-snug': '1.375em'
     },
     fontSize: {
+      '3xs': '1.2rem',
       xxs: '1.3rem',
       xs: '1.4rem',
       sm: '1.5rem',
@@ -280,7 +281,7 @@ module.exports = {
       // tighter: '1.125',
       tight: '1.25',
       snug: '1.375',
-      normal: '1.5',
+      normal: '1.45',
       relaxed: '1.625',
       loose: '2',
       3: '.75rem',

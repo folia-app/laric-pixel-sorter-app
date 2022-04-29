@@ -57,7 +57,7 @@ export default {
         this.status = 'Loading...'
 
         // fetch...
-        const assets = await this.$store.dispatch('assets/getAssetsFromOpenSea', { address: this.address })
+        const assets = await this.$store.dispatch('assets/getWalletAssets', { address: this.address })
 
         // get names
         let collections = assets.map(asset => asset.collection.name)

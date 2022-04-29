@@ -1,8 +1,8 @@
 <template lang="pug">
   .minted-results.grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
-    template(v-if="minted")
+    template(v-if="mints")
       //- mints...
-      template(v-for="mint in minted")
+      template(v-for="mint in mints")
         router-link.relative.group.block.mt-32(:to="'/tokens/' + mint.newTokenId")
           .w-full.relative.border
             .pb-full
@@ -37,10 +37,10 @@ import { mapState } from 'vuex'
 export default {
   name: 'MintedResults',
   computed: {
-    ...mapState(['minted'])
+    ...mapState(['mints'])
   },
   created () {
-    this.$store.dispatch('getMinted', { cached: false })
+    this.$store.dispatch('getMints', { cached: false })
   }
 }
 </script>

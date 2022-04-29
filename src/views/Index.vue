@@ -13,8 +13,8 @@
       .absolute.z-10.top-0.right-0.transition-all.duration-500.transform.origin-right.bg-white.min-h-screen.pointer-events-auto(:class="[panelWidths[1], {'scale-x-0': !panelOpen}]")
         //- panels
         transition-group(name="pagesfade", @before-enter="setPanelWidths")
-          info(v-show="$route.name === 'info'", key="info")
-          filters(v-show="$route.name === 'filter'", key="filter")
+          //- info(v-show="$route.name === 'info'", key="info")
+          filters(v-show="filtersVisible", key="filter")
           //- set-view(v-if="$route.name === 'set'", key="set")
           mint-view(v-if="$route.name === 'mint'", key="mint")
           nft-view(v-else-if="$route.name === 'token'", :key="$route.params.token")
@@ -42,7 +42,7 @@
                 div <b>Decomposer</b> mints strata of old.
 
             //- (info btn)
-            button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.hover_bg-gray-200.bg-gray-200(@click="openInfoOverlay")
+            button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.bg-gray-200.mouse_hover_bg-yellow-600(@click="openInfoOverlay")
               | Info
 
             div.w-1x2.lg_w-1x4.overflow-hidden.text-sm
@@ -72,16 +72,21 @@
         .bg-gray-200
           .w-1x2.text-sm.h-28.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
 
-        //- .sticky.z-10.bottom-0.left-0.w-full
-          .absolute.bottom-0.left-0.w-full.h-28.flex.justify-end
-            .w-full.lg_w-1x2.flex.overflow-hidden
+        .sticky.z-10.bottom-0.left-0.w-full
+          .absolute.bottom-0.left-0.w-full.h-20.flex.justify-end
+            .w-1x2.lg_w-1x4.flex.overflow-hidden
               //- connect
-              button.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.relative.z-10.relative(style="box-shadow:2px 0px 4px rgba(0,0,0,0.1)")
+              //- button.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.relative.z-10.relative(style="box-shadow:2px 0px 4px rgba(0,0,0,0.1)")
                 | Connect 🔗
               //- mint link
-              router-link.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.bg-gray-300.relative(to="/shred")
+              //- router-link.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.bg-gray-300.relative(to="/shred")
                 div.text-md Mint ꩜
                 .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
+
+              //- filter
+              button.w-full.flex.items-center.justify-center.bg-gray-200.relative.mouse_hover_bg-yellow-600(to="/filter", @click="filtersVisible = true")
+                div.text-sm.uppercase.tracking-wide Filter
+                .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2.text-lg ⍆
 
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
@@ -100,6 +105,7 @@
 
             .mt-em.relative(:class="{'max-h-56 overflow-hidden': whitelistExcerpted}")
               ul.text-columns-2.md_text-columns-3.lg_text-columns-4.pb-16
+                //- whitelist items...
                 li(v-for="item in whitelist")
                   template(v-if="item[1]")
                     a(:href="item[1]", target="_blank", rel="noopener")
@@ -172,7 +178,8 @@ export default {
       panelWidths: [],
       carouselTimer: null,
       whitelist,
-      whitelistExcerpted: true
+      whitelistExcerpted: true,
+      filtersVisible: false
     }
   },
   computed: {

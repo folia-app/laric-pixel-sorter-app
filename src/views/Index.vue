@@ -56,7 +56,7 @@
 
         //- token grid ====================================
 
-        minted-results
+        minted-results(@showFilters="openFiltersPanel")
 
         //- token grid: x-scroll
         //- .overflow-x-scroll.whitespace-no-wrap
@@ -67,26 +67,6 @@
 
               //- original
               //- img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
-
-        //- credits
-        .bg-gray-100.mt-48
-          .w-1x2.lg_w-3x4.text-sm.h-20.flex.items-center.px-6.opacity-25.justify-left End
-
-        .sticky.z-10.bottom-0.left-0.w-full
-          .absolute.bottom-0.left-0.w-full.h-20.flex.justify-end
-            .w-1x2.lg_w-1x4.flex.overflow-hidden
-              //- filter
-              template(v-if="filters.length")
-                .w-full.flex.items-stretch.bg-yellow-500.relative(to="/filter", @click="openFiltersPanel")
-                  button.flex.w-full.items-center.justify-center.text-sm.uppercase.tracking-wide.mouse_hover_bg-yellow-600(@click="openFiltersPanel")
-                    | Filters<sup class="ml-1 text-gray-400ff">{{ filters.length }}</sup>
-                  button.absolute.top-0.right-0.h-full.flex.items-center.w-20.pt-2.text-lg.flex.items-center.justify-center.bg-yellow-500.mouse_hover_bg-yellow-600(@click.stop="$router.replace({ query: {} })")
-                    svg-x.h-4.w-4(strokeWidth="1.1")
-
-              template(v-else)
-                button.w-full.flex.items-center.justify-center.bg-gray-200.relative.mouse_hover_bg-yellow-600(to="/filter", @click="openFiltersPanel")
-                  div.text-sm.uppercase.tracking-wide Filter
-                  .absolute.top-0.right-0.h-full.flex.items-center.w-20.pt-2.text-lg.flex.items-center.justify-center ⍆
 
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
@@ -200,9 +180,6 @@ export default {
     },
     carouselEnabled () {
       return this.home?.landing.length > 1
-    },
-    filters () {
-      return this.$route.query.collections?.split(',') || []
     }
   },
   methods: {

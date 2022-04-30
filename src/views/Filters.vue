@@ -3,12 +3,12 @@
     .flex.w-full.overflow-hidden
       //- scrollable column
       .flex-1.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500
-        .relative.text-md
+        .min-h-screen.flex.flex-col.relative.text-md
           header.h-20.z-20.relative.sticky.top-0.left-0.w-full.flex.w-full.items-center.justify-center.bg-gray-50
             button.w-20.absolute.top-0.left-0.h-full.flex.items-center.justify-center.mouse_hover_bg-black-a08(@click="$emit('close')") &larr;
             h2.uppercase.tracking-wide Filter
 
-          ul
+          ul.flex-1
             //- collections...
             li.h-20.flex.w-full.items-stretch(v-for="(collection, i) in whitelistByNetwork", :class="{'bg-gray-100': i % 2 === 0}")
               button.block.flex-1.flex.min-w-0.items-stretch.group(@click="toggleFilter(collection)")
@@ -27,7 +27,7 @@
           footer.sticky.bottom-0.left-0.w-full.flex.h-28.items-stretch.bg-gray-200.uppercase.text-smm.tracking-wide
             //- apply/close btn
             button.flex-1.flex.items-center.justify-center.mouse_hover_bg-yellow-600(@click="$emit('close')")
-              template(v-if="filters.length") Apply<sup class="ml-1 text-gray-400">{{ filters.length }}</sup>
+              template(v-if="filters.length") View<sup class="ml-1 text-gray-400">{{ filters.length }}</sup>
               template(v-else) Close
 
             //- (clear btn)

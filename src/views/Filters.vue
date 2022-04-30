@@ -3,17 +3,36 @@
     .flex.w-full.overflow-hidden
       //- scrollable column
       .flex-1.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500
-        .relative
-          header.h-24.z-20.relative.sticky.top-0.left-0.w-full.flex.w-full.items-center.justify-center.bg-gray-50
-            router-link.w-24.absolute.top-0.left-0.h-full.flex.items-center.justify-center.mouse_hover_bg-black-a08(to="/") &larr;
+        .relative.text-md
+          header.h-20.z-20.relative.sticky.top-0.left-0.w-full.flex.w-full.items-center.justify-center.bg-gray-50
+            button.w-20.absolute.top-0.left-0.h-full.flex.items-center.justify-center.mouse_hover_bg-black-a08(@click="$emit('close')") &larr;
             h2.uppercase.tracking-wide Filter
 
           ul
             //- collections...
-            li(v-for="(item, i) in whitelist", :class="{'bg-gray-100': i % 2 === 0}")
-              button.h-24.flex.w-full.items-stretch.mouse_hover_bg-gray-200(@click="toggleFilter(item)")
-                .w-24.bg-black-a03
-                .px-8.flex.items-center {{ item[0] }}
+            li.h-20.flex.w-full.items-stretch(v-for="(collection, i) in whitelistByNetwork", :class="{'bg-gray-100': i % 2 === 0}")
+              button.block.flex-1.flex.min-w-0.items-stretch.group(@click="toggleFilter(collection)")
+                //- check mark
+                .w-20.bg-black-a03.group-hover_bg-gray-200.flex.items-center.justify-center
+                  .h-3.w-3.rounded-full.bg-gray-400(v-if="isActive(collection)")
+                //- label
+                .flex-1.px-8.flex.items-center.text-left.min-w-0
+                  .flex-1.min-w-0.truncate.inline.text-gray-400
+                    .inline
+                      span.text-black {{ collection[0].split(' by')[0] }}
+                      template(v-if="collection[0].split(' by')[1]") &nbsp;by {{ collection[0].split(' by')[1] }}
+              //- opensea link
+              a.w-24.bg-black-a03ff.flex.items-center.justify-center.text-gray-400.text-sm.mouse_hover_bg-black-a03.mouse_hover_text-black(:href="collection[1]", target="_blank", rel="noopener noreferrer", @click.stop) ↗
+
+          footer.sticky.bottom-0.left-0.w-full.flex.h-28.items-stretch.bg-gray-200.uppercase.text-smm.tracking-wide
+            //- apply/close btn
+            button.flex-1.flex.items-center.justify-center.mouse_hover_bg-yellow-600(@click="$emit('close')")
+              template(v-if="filters.length") Apply<sup class="ml-1 text-gray-400">{{ filters.length }}</sup>
+              template(v-else) Close
+
+            //- (clear btn)
+            template(v-if="filters.length")
+              button.w-1x2.flex.items-center.justify-center.bg-gray-100.mouse_hover_bg-yellow-600(@click="$router.replace({ query: {}})") Clear
 
     //- .flex.w-full
       //- scrollable column
@@ -28,16 +47,45 @@
 import whitelist from '@/whitelist'
 export default {
   name: 'FilterIndex',
-  data () {
-    return {
-      whitelist
+  computed: {
+    whitelistByNetwork () {
+      if (this.$store.state.networkId === 4) {
+        return whitelist.filter(collection => collection[3]) // has rinkeby deploy
+      }
+      return whitelist
+    },
+    filters () {
+      return this.$route.query.collections?.split(',') || []
+    },
+    networkIndex () {
+      return this.$store.state.networkId === 4 ? 3 : 2
     }
   },
   methods: {
     toggleFilter (collection) {
-      // const networkIndex = this.$store.state.networkId === 4 ? 2 : 1
-      // const address = collection[networkIndex]
-      // this.$router.push({ params: { collection: }})
+      const address = collection[this.networkIndex]
+      let collections = this.$route.query.collections?.split(',') || []
+      // add
+      if (this.isActive(collection)) {
+        // remove by index
+        const index = collections.findIndex(address => address === collection[this.networkIndex])
+        if (index > -1) {
+          collections.splice(index, 1)
+        }
+      } else {
+        // add
+        collections.push(address)
+      }
+      if (collections.length) {
+        collections = collections.join(',')
+        this.$router.replace({ query: { collections } })
+      } else {
+        this.$router.replace({ query: {} })
+      }
+    },
+    isActive (collection) {
+      const address = collection[this.networkIndex]
+      return (this.$route.query.collections?.split(',') || []).includes(address)
     }
   }
 }

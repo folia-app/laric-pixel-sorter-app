@@ -5,8 +5,8 @@
       //- main / left col
       .flex-1.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500
         .relative
-          header.h-24.z-20.relative.sticky.top-0.left-0.w-full.flex.w-full.items-center.justify-center.bg-gray-100
-            router-link.w-24.absolute.top-0.left-0.h-full.flex.items-center.justify-center.mouse_hover_bg-black-a08(to="/") &larr;
+          header.h-20.z-20.relative.sticky.top-0.left-0.w-full.flex.w-full.items-center.justify-center.bg-gray-100
+            router-link.w-20.absolute.top-0.left-0.h-full.flex.items-center.justify-center.mouse_hover_bg-black-a08(to="/") &larr;
             h2 Mint Decomposed NFT
 
           p.pt-8.px-8.leading-relaxed

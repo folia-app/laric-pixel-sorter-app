@@ -404,7 +404,7 @@ export default new Vuex.Store({
 
         // fetch all events
         const events = await state.controllerContract.queryFilter('newContract', fromBlock)
-        // console.log({ newContractEvents: events })
+        console.log({ newContractEvents: events })
         // TODO factor REMOVE CONTRACT?
 
         // format

@@ -14,14 +14,14 @@
         //- panels
         transition-group(name="pagesfade", @before-enter="setPanelWidths")
           //- info(v-show="$route.name === 'info'", key="info")
-          filters(v-show="filtersVisible", key="filter")
+          filters(v-show="filtersVisible", key="filter", @close="closeFiltersPanel")
           //- set-view(v-if="$route.name === 'set'", key="set")
           mint-view(v-if="$route.name === 'mint'", key="mint")
           nft-view(v-else-if="$route.name === 'token'", :key="$route.params.token")
 
       //- (close panel overlay)
       transition(name="fade")
-        button.absolute.overlay.bg-black.cursor-pointer.opacity-75.focus_outline-none.pointer-events-auto(v-show="panelOpen", @click="$router.push('/')")
+        button.absolute.overlay.bg-black.cursor-pointer.opacity-75.focus_outline-none.pointer-events-auto(v-show="panelOpen", @click="closePanel")
 
     //- BODY - squishes for video player
     .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0ff': viewToken}")
@@ -69,24 +69,24 @@
               //- img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
 
         //- credits
-        .bg-gray-200
-          .w-1x2.text-sm.h-28.flex.items-center.px-12.opacity-25.justify-end Top &uarr;
+        .bg-gray-100.mt-48
+          .w-1x2.lg_w-3x4.text-sm.h-20.flex.items-center.px-6.opacity-25.justify-left End
 
         .sticky.z-10.bottom-0.left-0.w-full
           .absolute.bottom-0.left-0.w-full.h-20.flex.justify-end
             .w-1x2.lg_w-1x4.flex.overflow-hidden
-              //- connect
-              //- button.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.relative.z-10.relative(style="box-shadow:2px 0px 4px rgba(0,0,0,0.1)")
-                | Connect 🔗
-              //- mint link
-              //- router-link.w-1x2.flex.items-center.justify-center.bg-gray-300ff.bg-yellow-500.bg-gray-300.relative(to="/shred")
-                div.text-md Mint ꩜
-                .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2 &rarr;
-
               //- filter
-              button.w-full.flex.items-center.justify-center.bg-gray-200.relative.mouse_hover_bg-yellow-600(to="/filter", @click="filtersVisible = true")
-                div.text-sm.uppercase.tracking-wide Filter
-                .absolute.top-0.right-0.h-full.flex.items-center.px-10.pt-2.text-lg ⍆
+              template(v-if="filters.length")
+                .w-full.flex.items-stretch.bg-yellow-500.relative(to="/filter", @click="openFiltersPanel")
+                  button.flex.w-full.items-center.justify-center.text-sm.uppercase.tracking-wide.mouse_hover_bg-yellow-600(@click="openFiltersPanel")
+                    | Filters<sup class="ml-1 text-gray-400ff">{{ filters.length }}</sup>
+                  button.absolute.top-0.right-0.h-full.flex.items-center.w-20.pt-2.text-lg.flex.items-center.justify-center.bg-yellow-500.mouse_hover_bg-yellow-600(@click.stop="$router.replace({ query: {} })")
+                    svg-x.h-4.w-4(strokeWidth="1.1")
+
+              template(v-else)
+                button.w-full.flex.items-center.justify-center.bg-gray-200.relative.mouse_hover_bg-yellow-600(to="/filter", @click="openFiltersPanel")
+                  div.text-sm.uppercase.tracking-wide Filter
+                  .absolute.top-0.right-0.h-full.flex.items-center.w-20.pt-2.text-lg.flex.items-center.justify-center ⍆
 
         //- info
         //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
@@ -200,6 +200,9 @@ export default {
     },
     carouselEnabled () {
       return this.home?.landing.length > 1
+    },
+    filters () {
+      return this.$route.query.collections?.split(',') || []
     }
   },
   methods: {
@@ -210,6 +213,14 @@ export default {
     },
     closeInfoOverlay () {
       this.infoVisible = false
+    },
+    openFiltersPanel () {
+      this.filtersVisible = true
+      this.openPanel()
+    },
+    closeFiltersPanel () {
+      this.filtersVisible = false
+      this.closePanel()
     },
 
     // ==================
@@ -227,7 +238,7 @@ export default {
       // [body, work-panel]
       const wide = ['scale-x-5 sm_scale-x-20 lg_scale-x-33', 'w-19x20 sm_w-4x5 lg_w-2x3']
       const narrow = ['scale-x-50 lg_scale-x-60', 'w-1x2 lg_w-2x5']
-      const isNarrow = ['filter', 'info'].includes(this.$route.name)
+      const isNarrow = this.filtersVisible // || ['info'].includes(this.$route.name)
       this.panelWidths = isNarrow ? narrow : wide
     },
     openPanel () {
@@ -235,20 +246,23 @@ export default {
       this.panelOpen = true
       document.body.style.overflow = 'hidden'
     },
-    closeWorkPanel () {
+    closePanel () {
       document.body.style.overflow = ''
       this.panelOpen = false
       setTimeout(() => this.setPanelWidths(), 700) // after transition
+      if (this.$route.name !== 'index') {
+        this.$router.push('/')
+      }
     },
 
-    onRoute (to) {
+    onRoute (to, from) {
       // open panel ?
       if (to.meta.layout === 'panel') {
         this.openPanel()
       }
       // index / no panel ?
-      if (to.name === 'index') {
-        this.closeWorkPanel()
+      if (to.name === 'index' && (from && from.name !== 'index')) {
+        this.closePanel()
       }
     }
   },
@@ -270,7 +284,7 @@ export default {
 
   watch: {
     '$route' (to, from) {
-      this.onRoute(to)
+      this.onRoute(to, from)
     },
     workDocs () {
       this.setPanelWidths()

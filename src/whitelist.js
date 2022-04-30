@@ -27,7 +27,7 @@ export default [
   ['Crypto Coven', 'https://opensea.io/collection/cryptocoven', '0x5180db8F5c931aaE63c74266b211F580155ecac8'],
   ['CryptoKitties', 'https://opensea.io/collection/cryptokitties', '0x06012c8cf97BEaD5deAe237070F9587f8E7A266d'],
   ['CyberKongz', 'https://opensea.io/collection/cyberkongz', '0x57a204AA1042f6E66DD7730813f4024114d74f37'],
-  ['CryptoPunks', 'https://opensea.io/collection/cryptopunks', '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB'],
+  ['CryptoPunks', 'https://opensea.io/collection/cryptopunks', '0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB', '0x999426cb37bb8Ea786d3E24F6094004fad686f70'],
   ['CryptoSkulls', 'https://opensea.io/CryptoSkulls/cryptoskulls', '0xc1Caf0C19A8AC28c41Fe59bA6c754e4b9bd54dE9'],
 
   // !! missing from contract
@@ -35,7 +35,7 @@ export default [
 
   ['Decentraland', 'https://opensea.io/collection/decentraland', '0xF87E31492Faf9A91B02Ee0dEAAd50d51d56D5d4d'],
   ['Doodles', 'https://opensea.io/collection/doodles-official', '0x8a90CAb2b38dba80c64b7734e58Ee1dB38B8992e'],
-  ['DotCom Seance', 'https://dotcomseance.com', '0x6CA044FB1cD505c1dB4eF7332e73a236aD6cb71C'],
+  ['DotCom Seance', 'https://dotcomseance.com', '0x6CA044FB1cD505c1dB4eF7332e73a236aD6cb71C', '0x24Fe466A59A9d072a8fC0A4ad3f8396d91A34399'],
 
   // ['eBoy Blockbob', 'https://opensea.io/collection/eboy-blockbob'],
 
@@ -57,23 +57,31 @@ export default [
   ['Hashmasks', 'https://opensea.io/collection/hashmasks', '0xC2C747E0F7004F9E8817Db2ca4997657a7746928'],
   ['Kaiju Kingz', 'https://opensea.io/collection/kaiju-kingz', '0x0c2E57EFddbA8c768147D1fdF9176a0A6EBd5d83'],
   ['Kudzu', 'https://opensea.io/collection/foliavirus', '0x9d413B9434c20C73f509505F7fbC6FC591bbf04A', '0xF80B749e0d03C005b8EfB7451BC6552555556149'],
-
-  //
-  ['Lazy Lions', 'https://opensea.io/collection/lazy-lions'],
-  ['lobsterdao', 'https://opensea.io/collection/lobsterdao'],
-  ['MoonCats', 'https://opensea.io/collection/acclimatedmooncats'],
-  ['Mutant Ape Yacht Club', 'https://opensea.io/collection/mutant-ape-yacht-club'],
-  ['My Curio Cards', 'https://opensea.io/collection/curiocardswrapper'],
-  ['Nouns', 'https://opensea.io/collection/nouns'],
-  ['Parallel Alpha', 'https://opensea.io/collection/parallelalpha'],
-  ['Petra Cortright - Room', 'https://opensea.io/collection/simco-drops-petra-cortright-room'],
-  ['PhantaBear', 'https://opensea.io/collection/phantabear'],
-  ['PixelMap', 'https://opensea.io/collection/pixelmap'],
-  ['Pudgy Penguins', 'https://opensea.io/collection/pudgypenguins'],
-  ['PunkScapes', 'https://opensea.io/collection/punkscapes'],
-  ['Realiti', 'https://opensea.io/collection/realitic'],
-  ['THE SHIBOSHIS', 'https://opensea.io/collection/theshiboshis'],
-  ['World of Women', 'https://opensea.io/collection/world-of-women-nft'],
-  ['Wrapped CryptoCats Official', 'https://opensea.io/collection/wrappedcryptocats'],
-  ['Wrapped Pixereum', 'https://opensea.io/collection/wrapped-pixereum']
+  ['Lazy Lions', 'https://opensea.io/collection/lazy-lions', '0x8943C7bAC1914C9A7ABa750Bf2B6B09Fd21037E0'],
+  ['lobsterdao', 'https://opensea.io/collection/lobsterdao', '0x026224A2940bFE258D0dbE947919B62fE321F042'],
+  ['LOSTPOETS', 'https://opensea.io/collection/lostpoets', '0x4b3406a41399c7FD2BA65cbC93697Ad9E7eA61e5'],
+  ['Meebits', 'https://opensea.io/collection/meebits', '0x7Bd29408f11D2bFC23c34f18275bBf23bB716Bc7'],
+  ['Metasaurs by Dr. DMT', 'https://opensea.io/collection/metasaurs-nft', '0xF7143Ba42d40EAeB49b88DaC0067e54Af042E963'],
+  ['MoonCats', 'https://opensea.io/collection/acclimatedmooncats', '0xc3f733ca98E0daD0386979Eb96fb1722A1A05E69'],
+  ['Mutant Ape Yacht Club', 'https://opensea.io/collection/mutant-ape-yacht-club', '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'],
+  // ['My Curio Cards', 'https://opensea.io/collection/curiocardswrapper'],
+  ['Nouns', 'https://opensea.io/collection/nouns', '0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03'],
+  ['PEACEFUL GROUPIES', 'https://opensea.io/collection/peaceful-groupies', '0x4f89Cd0CAE1e54D98db6a80150a824a533502EEa'],
+  ['PhantaBear', 'https://opensea.io/collection/phantabear', '0x67D9417C9C3c250f61A83C7e8658daC487B56B09'],
+  // ['Parallel Alpha', 'https://opensea.io/collection/parallelalpha'],
+  // ['Petra Cortright - Room', 'https://opensea.io/collection/simco-drops-petra-cortright-room'],
+  ['PixelMap', 'https://opensea.io/collection/pixelmap', '0x050dc61dFB867E0fE3Cf2948362b6c0F3fAF790b'],
+  ['Pudgy Penguins', 'https://opensea.io/collection/pudgypenguins', '0xBd3531dA5CF5857e7CfAA92426877b022e612cf8'],
+  ['PunkScapes', 'https://opensea.io/collection/punkscapes', '0x51Ae5e2533854495f6c587865Af64119db8F59b4'],
+  ['Realiti', 'https://opensea.io/collection/realitic', '0x29b7315fc83172CFcb45c2Fb415E91A265fb73f2'],
+  ['Rebel Society', 'https://opensea.io/collection/rebelsociety', '0x8CD3cEA52a45f30Ed7c93a63FB2b5C13B453d5A1'],
+  ['SupDucks', 'https://opensea.io/collection/supducks', '0x3Fe1a4c1481c8351E91B64D5c398b159dE07cbc5'],
+  ['The Doge Pound', 'https://opensea.io/collection/the-doge-pound', '0xF4ee95274741437636e748DdAc70818B4ED7d043'],
+  ['The Sandbox', 'https://opensea.io/collection/sandbox', '0x5CC5B05a8A13E3fBDB0BB9FcCd98D38e50F90c38'],
+  ['THE SHIBOSHIS', 'https://opensea.io/collection/theshiboshis', '0x11450058d796B02EB53e65374be59cFf65d3FE7f'],
+  ['WomenRise', 'https://opensea.io/collection/womenrise', '0x7f7685b4CC34BD19E2B712D8a89f34D219E76c35'],
+  ['World of Women', 'https://opensea.io/collection/world-of-women-nft', '0xe785E82358879F061BC3dcAC6f0444462D4b5330'],
+  ['WoW Pixies Official', 'https://opensea.io/collection/wow-pixies-v2', '0xB67812ce508b9fC190740871032237C24b6896A0'],
+  ['Wrapped CryptoCats Official', 'https://opensea.io/collection/wrappedcryptocats', '0xd0e7Bc3F1EFc5f098534Bce73589835b8273b9a0'],
+  ['Wrapped Pixereum', 'https://opensea.io/collection/wrapped-pixereum', '0x6f9d53BA6c16fcBE66695E860e72a92581b58Aed']
 ]

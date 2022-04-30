@@ -2,7 +2,7 @@
   .minted-results.grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
     template(v-if="mints")
       //- mints...
-      template(v-for="mint in mints")
+      template(v-for="mint in mintsFiltered")
         router-link.relative.group.block.mt-32(:to="'/tokens/' + mint.newTokenId")
           .w-full.relative.border
             .pb-full
@@ -37,7 +37,17 @@ import { mapState } from 'vuex'
 export default {
   name: 'MintedResults',
   computed: {
-    ...mapState(['mints'])
+    ...mapState(['mints']),
+
+    mintsFiltered () {
+      let mints = this.mints
+      let filterBy = this.$route.query.collections?.split(',') || []
+      filterBy = filterBy.map(addr => addr.toLowerCase())
+      if (filterBy.length) {
+        mints = mints.filter(mint => filterBy.includes(mint.contractAddress.toLowerCase()))
+      }
+      return mints
+    }
   },
   created () {
     this.$store.dispatch('getMints', { cached: false })

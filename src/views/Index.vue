@@ -2,7 +2,7 @@
   .index
 
     //- (token viewer overlay)
-    .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': !viewToken}")
+    //- .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': !viewToken}")
       view-token(:token="$route.params.token", :visible="viewToken", @close="closeViewer")
     //- (token viewer)
     //- .fixed.overlay.z-50.transition.transform.duration-700.origin-right.py-5.md_p-10.lg_p-12.xl_p-24.flex.bg-black(:class="{'pointer-events-none scale-x-0ff opacity-0': !viewToken}")
@@ -28,7 +28,7 @@
     //- .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0ff': viewToken}")
 
     //- MAIN
-    main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
+    main.index.relative.min-h-screen.flex.flex-col.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
 
       //- HEADER AS INTRO
       header.sticky.left-0.top-0.w-full.flex.flex-col.text-md.z-20
@@ -58,7 +58,8 @@
 
       //- token grid ====================================
 
-      minted-results(@showFilters="openFiltersPanel")
+      .flex-1.flex.w-full
+        minted-results(@showFilters="openFiltersPanel")
 
       //- token grid: x-scroll
       //- .overflow-x-scroll.whitespace-no-wrap

@@ -1,14 +1,15 @@
 <template lang="pug">
-  section.minted-results
+  section.minted-results.flex.flex-col.w-full
     template(v-if="!mints")
       .fixed.z-50.bottom-0.left-0.animate-pulse.text-black.px-6.py-4.text-md Loading...
 
     template(v-else)
-      .grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
+      .flex-1.w-full.grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
         //- mints...
         template(v-for="mint in mintsFiltered")
           router-link.relative.group.block.mt-32(:to="'/tokens/' + mint.newTokenId")
-            .w-full.relative.border
+            img.w-full(:src="`http://164.92.233.6:3001/get/${mint.contractAddress}/${mint.tokenId}`")
+            //- .w-full.relative.border
               .pb-full
               .absolute.top-0.left-0.w-full.truncateff.break-all.text-xs
                 | from contract<br>{{ mint.contractAddress }}<br>
@@ -18,14 +19,14 @@
             //- img.w-full(:src="`/demo/K2.png`")
 
             //- original
-            //- .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
-              img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/demo/K1.png`")
+            .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
+              img.absolute.overlay.group-hover_animate-pulse2ff(:src="`http://164.92.233.6:3001/get/original/${mint.contractAddress}/${mint.tokenId}`")
 
         //- divider
-        .col-span-2.sm_col-span-3.lg_col-span-4
+        //- .col-span-2.sm_col-span-3.lg_col-span-4
 
         //- demo items...
-        template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
+        //- template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
           router-link.relative.group.block.mt-32(:to="'/tokens/' + n")
 
             img.w-full(:src="`/demo/${n}2.png`")

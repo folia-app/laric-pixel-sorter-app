@@ -55,6 +55,14 @@ export default new Router({
       meta: { layout: 'panel' }
     },
 
+    // chart
+    {
+      path: '/stats',
+      name: 'stats',
+      component: Index,
+      meta: { layout: 'panel' }
+    },
+
     // mint
     {
       path: '/mint',

@@ -1,11 +1,13 @@
 <template lang="pug">
   details(v-show="assetsFiltered.length")
     summary.h-24.flex.items-center.justify-center.relative.cursor-pointer
-      | {{ collectionName }} <sup class="ml-1">{{ assetsFiltered.length }}</sup>
-      .absolute.top-0.right-0.h-full.flex.items-center.text-xs
+      .flex-1.min-w-0.truncate.px-6.md_text-center
+        .inline {{ collectionName }} <sup class="ml-1">{{ assetsFiltered.length }}</sup>
+
+      .md_absolute.top-0.right-0.h-full.flex.items-center.text-xs
         .mr-5.opacity-50
           template(v-if="editionsLeft === undefined") .../88
-          template(v-else) {{ 88 - editionsLeft }}/88 Mints
+          template(v-else) {{ 88 - editionsLeft }}/88 #[span.hidden.sm_inline Mints]
         svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
     //- div.text-center {{ collection.address }}

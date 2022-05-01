@@ -40,9 +40,11 @@
           //- | End
 
       //- filters btn (sticky)
-      .sticky.z-10.bottom-0.left-0.w-full
+      .sticky.z-10.bottom-0.left-0.w-full.pointer-events-none
+        chart
+
         .absolute.bottom-0.left-0.w-full.h-20.flex.justify-end
-          .w-1x2.lg_w-1x4.flex.overflow-hidden
+          .w-1x2.lg_w-1x4.flex.overflow-hidden.pointer-events-auto
             //- (filters active)
             template(v-if="filters.length")
               .w-full.flex.items-stretch.bg-yellow-500.relative(to="/filter", @click="$emit('showFilters')")
@@ -64,9 +66,10 @@
 <script>
 import { mapState } from 'vuex'
 import SvgX from '@/components/SVG-X'
+import Chart from '@/components/Chart'
 export default {
   name: 'MintedResults',
-  components: { SvgX },
+  components: { SvgX, Chart },
   computed: {
     ...mapState(['mints']),
 

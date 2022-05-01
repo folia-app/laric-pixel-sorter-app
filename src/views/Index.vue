@@ -15,6 +15,7 @@
         transition-group(name="pagesfade", @before-enter="setPanelWidths")
           //- info(v-show="$route.name === 'info'", key="info")
           filters(v-show="filtersVisible", key="filter", @close="closeFiltersPanel")
+          stats(v-if="$route.name === 'stats'", key="stats")
           //- set-view(v-if="$route.name === 'set'", key="set")
           mint-view(v-if="$route.name === 'mint'", key="mint")
           nft-view(v-else-if="$route.name === 'token'", :key="$route.params.token")
@@ -72,8 +73,8 @@
       //- info
       //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
 
-    //- pie chart
-    //- chart.z-10
+      //- pie chart
+      //- chart.z-10
 
     //- (info overlay)
     .fixed.z-40.overlay.overflow-y-scroll.scrollbars-hidden(ref="infoEl", :class="{'pointer-events-none': !infoVisible}")
@@ -135,7 +136,7 @@ import MintView from '@/views/Mint'
 import NftView from '@/views/NFT'
 import Info from '@/views/Info'
 import Filters from '@/views/Filters'
-import SetView from '@/views/Set'
+import Stats from '@/views/Stats'
 import ViewToken from '@/views/ViewToken'
 import LandingSlideWork from '@/components/LandingSlideWork'
 import RichText from '@/components/RichText'
@@ -147,12 +148,13 @@ import Observer from '@/components/Observer'
 import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
 import SvgX from '@/components/SVG-X'
 import MintedResults from '@/components/MintedResults'
-// import Chart from '@/components/Chart'
+import Chart from '@/components/Chart'
+
 import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
-  components: { SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX, MintedResults /* Chart */ },
+  components: { Stats, SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX, MintedResults, Chart },
   data () {
     return {
       squish: false,
@@ -219,8 +221,8 @@ export default {
     setPanelWidths () {
       // [body, work-panel]
       const wide = ['scale-x-5 sm_scale-x-20 lg_scale-x-33', 'w-19x20 sm_w-4x5 lg_w-2x3']
-      const narrow = ['scale-x-50 lg_scale-x-60', 'w-1x2 lg_w-2x5']
-      const isNarrow = this.filtersVisible // || ['info'].includes(this.$route.name)
+      const narrow = ['scale-x-5 sm_scale-x-20 lg_scale-x-60', 'w-19x20 sm_w-4x5 lg_w-2x5']
+      const isNarrow = this.filtersVisible || ['stats'].includes(this.$route.name)
       this.panelWidths = isNarrow ? narrow : wide
     },
     openPanel () {

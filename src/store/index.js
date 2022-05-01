@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 // contracts
 import NFTContract from '../../contracts/Token'
 import Controller from '../../contracts/Controller'
+import whitelist from '@/whitelist'
 // ethers
 import { ethers, BigNumber as bn } from 'ethers'
 // import Web3 from 'web3'
@@ -109,6 +110,24 @@ export default new Vuex.Store({
       meta.push({ name: 'twitter:domain', content: 'folia.app' })
       // meta.push({ property: 'og:url', content: ##ADDCANNONICAL## })
       return meta
+    },
+    mintedChartDataset (state) {
+      let dataset
+      if (state.mints) {
+        let mintedContracts = state.mints.map(mint => mint.contractAddress)
+        mintedContracts = [...new Set(mintedContracts)] // de-dupe
+        // fill...
+        dataset = mintedContracts.map(addr => {
+          addr = addr.toLowerCase()
+          const contractInfo = whitelist.find(collection => collection[2].toLowerCase() === addr || collection[3]?.toLowerCase() === addr)
+          return {
+            label: contractInfo ? contractInfo[0] : addr,
+            color: '#' + addr.slice(-6),
+            count: state.mints.filter(mint => mint.contractAddress.toLowerCase() === addr.toLowerCase()).length
+          }
+        })
+      }
+      return dataset
     }
   },
   mutations: {

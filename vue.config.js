@@ -7,7 +7,14 @@ module.exports = {
       '/.netlify': {
         target: 'http://localhost:9000',
         pathRewrite: { '^/.netlify/functions': '' }
+      },
+
+      '/api/4/': {
+        target: 'http://164.92.233.6', // /get/0x95793c65c398d0a5eeb92d6b475f4e6a2044bee1/8000020'
+        pathRewrite: { '^/api/4/': '' }
       }
+
+      // 'metadata/1/': {}
     }
   },
 

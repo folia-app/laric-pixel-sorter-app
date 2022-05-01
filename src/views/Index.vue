@@ -24,52 +24,56 @@
         button.absolute.overlay.bg-black.cursor-pointer.opacity-75.focus_outline-none.pointer-events-auto(v-show="panelOpen", @click="closePanel")
 
     //- BODY - squishes for video player
-    .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0ff': viewToken}")
-      //- MAIN
-      main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
+    //- .relative.transform.transition-transform.origin-left.duration-700(:class="{'scale-x-0ff': viewToken}")
 
-        //- HEADER AS INTRO
-        header.sticky.left-0.top-0.w-full.flex.flex-col.text-md.z-20
-          //- top bar
-          .flex.flex-wrap.w-full.items-start
-            h1.sr-only Decomposer
+    //- MAIN
+    main.index.relative.min-h-screen.transition.duration-500.transform.origin-left(:class="panelOpen ? panelWidths[0] : ''")
 
-            .w-full.lg_w-auto.lg_flex-1.flex.bg-gray-100
-              a.w-20.h-20.flex.items-center.justify-center.borderff.pb-2.pr-2.hover_bg-yellow-500(href="https://folia.app", target="_blank")
-                svg-fleuron(style="height:1.4em")
+      //- HEADER AS INTRO
+      header.sticky.left-0.top-0.w-full.flex.flex-col.text-md.z-20
+        //- top bar
+        .flex.flex-wrap.w-full.items-start
+          h1.sr-only Decomposer
 
-              .h-20.flex-1.flex.items-center
-                div <b>Decomposer</b> mints strata of old.
+          .w-full.lg_w-auto.lg_flex-1.flex.bg-gray-100
+            a.w-20.h-20.flex.items-center.justify-center.borderff.pb-2.pr-2.hover_bg-yellow-500(href="https://folia.app", target="_blank")
+              svg-fleuron(style="height:1.4em")
 
-            //- (info btn)
-            button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.bg-gray-200.mouse_hover_bg-yellow-600(@click="openInfoOverlay")
-              | Info
+            .h-20.flex-1.flex.items-center
+              div <b>Decomposer</b> mints strata of old.
 
-            div.w-1x2.lg_w-1x4.overflow-hidden.text-sm
-              //- connect/disconnect btn
-              connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10(connectLbl="CONNECT", iconWidth="w-20")
+          //- (info btn)
+          button.text-sm.uppercase.h-20.w-1x2.lg_w-1x4.flex.items-center.justify-center.pointer-events-auto.bg-gray-200.mouse_hover_bg-yellow-600(@click="openInfoOverlay")
+            | Info
 
-              //- mint link
-              router-link(to="/mint").text-sm.uppercase.h-20.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.relative.mouse_hover_bg-yellow-600
-                div Mint
-                .absolute.top-0.right-0.h-full.flex.items-center.w-20.justify-center &rarr;
+          div.w-1x2.lg_w-1x4.overflow-hidden.text-sm
+            //- connect/disconnect btn
+            connect-disconnect-btn.h-20.bg-gray-300.shadow-md.relative.z-10(connectLbl="CONNECT", iconWidth="w-20")
 
-        //- token grid ====================================
+            //- mint link
+            router-link(to="/mint").text-sm.uppercase.h-20.flex.items-center.justify-center.pointer-events-auto.bg-gray-300.relative.mouse_hover_bg-yellow-600
+              div Mint
+              .absolute.top-0.right-0.h-full.flex.items-center.w-20.justify-center &rarr;
 
-        minted-results(@showFilters="openFiltersPanel")
+      //- token grid ====================================
 
-        //- token grid: x-scroll
-        //- .overflow-x-scroll.whitespace-no-wrap
-          template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
-            router-link.inline-block.relative.hover_bg-gray-300ff.transition.duration-1000.group(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
+      minted-results(@showFilters="openFiltersPanel")
 
-              img.block.h-screen.w-auto(:src="`/demo/${n}2.png`")
+      //- token grid: x-scroll
+      //- .overflow-x-scroll.whitespace-no-wrap
+        template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
+          router-link.inline-block.relative.hover_bg-gray-300ff.transition.duration-1000.group(:class="{'bg-gray-50': !(n % 2), 'bg-gray-100': n % 2}", :to="'/works/' + n")
 
-              //- original
-              //- img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
+            img.block.h-screen.w-auto(:src="`/demo/${n}2.png`")
 
-        //- info
-        //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
+            //- original
+            //- img.absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100(:src="`/demo/${n}1.png`")
+
+      //- info
+      //- info.w-full.min-h-100vw.sm_min-h-50vw.lg_min-h-33vw(v-show="infoVisible && workDocs.length > 0")
+
+    //- pie chart
+    //- chart.z-10
 
     //- (info overlay)
     .fixed.z-40.overlay.overflow-y-scroll.scrollbars-hidden(ref="infoEl", :class="{'pointer-events-none': !infoVisible}")
@@ -143,11 +147,12 @@ import Observer from '@/components/Observer'
 import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
 import SvgX from '@/components/SVG-X'
 import MintedResults from '@/components/MintedResults'
+// import Chart from '@/components/Chart'
 import whitelist from '@/whitelist'
 let lastRt
 export default {
   name: 'Index',
-  components: { SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX, MintedResults },
+  components: { SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, SetView, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX, MintedResults /* Chart */ },
   data () {
     return {
       squish: false,

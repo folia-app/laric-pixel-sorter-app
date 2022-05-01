@@ -39,6 +39,7 @@
         .w-1x2.lg_w-3x4.text-sm.h-20.flex.items-center.px-6.opacity-25.justify-left
           //- | End
 
+      //- filters btn (sticky)
       .sticky.z-10.bottom-0.left-0.w-full
         .absolute.bottom-0.left-0.w-full.h-20.flex.justify-end
           .w-1x2.lg_w-1x4.flex.overflow-hidden

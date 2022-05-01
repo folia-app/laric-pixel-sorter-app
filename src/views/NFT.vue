@@ -14,10 +14,10 @@
 
             //- image
             div(:class="{'hidden': !imgLoaded}")
-              img.w-full.block(:src="`/demo/${$route.params.work}2.png`", @load="imgLoaded = true", @error="imgLoaded = false")
+              img.w-full.block(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`", @load="imgLoaded = true", @error="imgLoaded = false")
               //- original
-              .absolute.overlay.z-10.transition.duration-1000.opacity-0.group-hover_opacity-100
-                img.absolute.overlay.group-hover_animate-pulse2(:src="`/demo/${$route.params.work}1.png`")
+              .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
+                img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`")
 
           //- right col
           section.flex.flex-col.bg-gray-50
@@ -71,8 +71,16 @@
             template(v-if="sourceAsset") {{ sourceAsset.collectionName }}
             template(v-else)
               addr(:address="mint && mint.contractAddress")
+
           .grid.grid-cols-4.items-end
-            template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
+            template(v-for="mint in relatedAssets")
+              router-link.relative.group.block.mt-16(:to="'/tokens/' + mint.newTokenId")
+                img.w-full(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`")
+                //- original
+                .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
+                  img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`")
+
+            //- template(v-for="n in 'ABCDEFGHIJKLMNOPQR'.split('')")
               router-link.relative.group.block.transition.duration-1000(:to="'/works/' + n")
 
                 img.w-full(:src="`/demo/${n}2.png`")

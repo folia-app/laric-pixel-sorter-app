@@ -8,19 +8,10 @@
         //- mints...
         template(v-for="mint in mintsFiltered")
           router-link.relative.group.block.mt-32(:to="'/tokens/' + mint.newTokenId")
-            img.w-full(:src="`http://164.92.233.6:3001/get/${mint.contractAddress}/${mint.tokenId}`")
-            //- .w-full.relative.border
-              .pb-full
-              .absolute.top-0.left-0.w-full.truncateff.break-all.text-xs
-                | from contract<br>{{ mint.contractAddress }}<br>
-                | token ID<br>{{ mint.tokenId }}<br><br>
-                | new token ID<br>{{ mint.newTokenId }}
-
-            //- img.w-full(:src="`/demo/K2.png`")
-
+            img.w-full(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`")
             //- original
             .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
-              img.absolute.overlay.group-hover_animate-pulse2ff(:src="`http://164.92.233.6:3001/get/original/${mint.contractAddress}/${mint.tokenId}`")
+              img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`")
 
         //- divider
         //- .col-span-2.sm_col-span-3.lg_col-span-4

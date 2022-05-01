@@ -4,12 +4,12 @@
 # rinkeby server redirect
 [[redirects]]
   from = "/api/4/*"
-  to = "http://164.92.233.6/:splat"
+  to = "http://164.92.233.6:3001/:splat"
 
 # rinkeby tokenURI redirect
 [[redirects]]
   from = "/v1/metadata/*"
-  to = "http://164.92.233.6/v1/metadata/:splat"
+  to = "http://164.92.233.6:3001/v1/metadata/:splat"
 
 [[redirects]]
   from = "/*"

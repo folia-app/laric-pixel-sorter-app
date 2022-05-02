@@ -1,4 +1,4 @@
-// folia-contracts commit 0f2da58dfe82faca60bbc041c76c86e949cbf94b
+// folia-contracts commit 99291793038b1c2a07a8821d5e8dbb4f62017162
 
 export default {
   contractName: 'DecomposerController',
@@ -431,6 +431,12 @@ export default {
     }
   ],
   networks: {
+    1: {
+      events: {},
+      links: {},
+      address: '0x75Fc8B1a29510d34dA3D9577d536329196c1B481',
+      transactionHash: '0x7d4edaf381e5331bf5c0468e037ce904dd73d08def432b3a9e667c423dc7d4bb'
+    },
     4: {
       events: {
         '0x18670913cc4dffc5277486432dacf08f8b021a6c7769b001c47d6e9a4b9917d9': {

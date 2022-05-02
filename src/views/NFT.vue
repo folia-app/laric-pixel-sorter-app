@@ -13,7 +13,7 @@
                 .absolute.overlay.p-3.text-lg.text-gray-400.flex.items-center.justify-center(v-if="imgLoaded === false") ⚠︎
 
             //- image
-            div(:class="{'hidden': !imgLoaded}")
+            div(v-if="mint", :class="{'hidden': !imgLoaded}")
               img.w-full.block(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`", @load="imgLoaded = true", @error="imgLoaded = false")
               //- original
               .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
@@ -96,11 +96,11 @@
                 .pb-full
                   .absolute.overlay.flex.items-center.justify-center.text-sm.opacity-10 {{ n }}
 
-          .sticky.z-10.bottom-0.left-0.w-full.h-28.flex.text-sm
-            router-link.w-1x2.flex.items-center.justify-center.bg-gray-200.relative(to="/")
+          .sticky.z-10.bottom-0.left-0.w-full.h-28.flex.text-smm.uppercase.tracking-wide
+            router-link.w-1x2.flex.items-center.justify-center.bg-gray-200.relative.mouse_hover_bg-yellow-600(to="/")
               .w-28.h-full.flex.items-center.justify-center.absolute.top-0.left-0.pt-2 &larr;
               div View All
-            router-link.w-1x2.flex.items-center.justify-center.bg-gray-300.relative(to="/mint")
+            router-link.w-1x2.flex.items-center.justify-center.bg-gray-300.relative.mouse_hover_bg-yellow-600(to="/mint")
               div Mint New
               .w-28.h-full.flex.items-center.justify-center.absolute.top-0.right-0 ꩜
 </template>

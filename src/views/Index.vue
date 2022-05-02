@@ -234,6 +234,7 @@ export default {
     closePanel () {
       document.body.style.overflow = ''
       this.panelOpen = false
+      this.filtersVisible = false
       setTimeout(() => this.setPanelWidths(), 700) // after transition
       if (this.$route.name !== 'index') {
         this.$router.push('/')

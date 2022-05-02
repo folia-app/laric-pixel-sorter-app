@@ -1,6 +1,11 @@
 [build]
   functions = "functions"
 
+# proxy rinkeby server media
+[[redirects]]
+  from = "/gif/*"
+  to = "http://164.92.233.6:3001/gif/:splat"
+
 # rinkeby server proxy
 [[redirects]]
   from = "/api/4/*"

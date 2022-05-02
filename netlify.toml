@@ -5,6 +5,7 @@
 [[redirects]]
   from = "/gif/*"
   to = "http://164.92.233.6:3001/gif/:splat"
+  status = 200
 
 # rinkeby server proxy
 [[redirects]]

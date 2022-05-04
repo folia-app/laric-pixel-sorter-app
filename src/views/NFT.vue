@@ -25,8 +25,8 @@
               .flex.justify-between
                 //- name
                 h1
-                  .text-3xs.mb-1 [DECOMPOSED]
-                  .text-black {{ sourceAsset ? sourceAsset.name : '...' }}
+                  //- .text-3xs.mb-1 [DECOMPOSED]
+                  .text-black Decomposed {{ sourceAsset ? sourceAsset.name : '...' }}
                 //- no.
                 //- div {{ '#' + $route.params.work }}
 

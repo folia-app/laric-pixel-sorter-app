@@ -85,7 +85,7 @@
         .relative.z-10.bg-gray-200(@click.stop, v-show="infoVisible")
           .px-10.py-10.leading-normal
             p.pr-10 A new interactive NFT collection by artist #[a.font-bold.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/", target="_blank", rel="noopener noreferrer") Oliver Laric].
-            p.mt-em In Decomposer, collectors mint new "decomposed" NFTs from #[b their own collection]. Each pixel will be arranged from lightest to darkness&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
+            p.mt-em In Decomposer, collectors mint new "decomposed" NFTs from #[b their own collection]. Each pixel will be arranged from lightest to darkest&mdash;creating a stratum of color. The collector #[b retains their original NFT] and the new "decomposed" NFT is minted into their wallet. The script is an interactive adaptation of Laric’s piece from 2007 titled, #[a.border-b.border-current.border-dashed.hover_border-solid(href="http://oliverlaric.com/displacement.htm", target="_blank", rel="noopener noreferrer") „Pixels Rearranged from Lightest to Darkest“].
 
             p.mt-em At this time, only a <b>selected list</b> of NFT collections may be minted, with a limit of <b>88 mints per collection</b>, and max of <b>888 total mints</b> in the collection:
 
@@ -107,10 +107,11 @@
                     | {{ whitelistExcerpted ? 'MORE' : 'LESS' }}
 
           footer.flex.w-full
-            button.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-300.mouse_hover_bg-gray-400(@click="infoVisible = !infoVisible")
-              | Contract &nbsp;↗
+            template(v-if="$store.state.nftContract")
+              a.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-300.mouse_hover_bg-gray-400(:href="`${$store.getters.network.explorer.domain}/address/${$store.state.nftContract.address}`", target="_blank", rel="noopener noreferrer")
+                | Contract &nbsp;↗
 
-            router-link(to="/filter").text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-350.mouse_hover_bg-gray-400
+            a.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-350.mouse_hover_bg-gray-400(:href="`${$store.getters.openSeaLink({})}/collection/decomposer${ $store.state.networkId === 4 ? '-v2': '' }`", target="_blank", rel="noopener noreferrer")
               | OpenSea &nbsp;↗
 
           //- close btn

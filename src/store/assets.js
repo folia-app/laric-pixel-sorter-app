@@ -85,7 +85,8 @@ export default {
         let asset = await dispatch('fetchFromOpenSea', { path: `/api/v1/asset/${contractAddress}/${tokenId}` }, { root: true })
 
         if (asset) {
-          console.log({ asset })
+          // console.log({ asset })
+
           // filter data
           asset = {
             name: asset.name,

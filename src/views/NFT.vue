@@ -6,14 +6,16 @@
       .flex-1.relative.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500
         .w-full.grid.grid-cols-2
           //- left col
-          figure.group.relative.bg-gray-200(:class="{'animate-pulse': imgLoaded === undefined}")
+          figure.w-full
+            mint-image.w-full(:mint="mint")
+          //- figure.group.relative.bg-gray-200(:class="{'animate-pulse': imgLoaded === undefined}")
             //- (loading image/error)
             template(v-if="!imgLoaded")
               .pb-full
                 .absolute.overlay.p-3.text-lg.text-gray-400.flex.items-center.justify-center(v-if="imgLoaded === false") ⚠︎
 
             //- image
-            div(v-if="mint", :class="{'hidden': !imgLoaded}")
+            template(v-if="mint")
               img.w-full.block(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`", @load="imgLoaded = true", @error="imgLoaded = false")
               //- original
               .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
@@ -65,7 +67,9 @@
             footer.flex.justify-end.p-8.text-xxs.text-gray-300
               a.hover_text-black(:href="$store.getters.openSeaLink({ token: $route.params.token })", target="_blank", rel="noopener noreferrer") OpenSea ↗
 
+        //- (related assets)
         footer(v-if="relatedAssets.length > 0")
+          //- header
           h6.block.w-full.px-6.pt-48.pb-4.text-smm.border-tff.bg-gray-100
             span.text-gray-400 More from&nbsp;
             template(v-if="sourceAsset") {{ sourceAsset.collectionName }}
@@ -73,8 +77,12 @@
               addr(:address="mint && mint.contractAddress")
 
           .grid.grid-cols-4.items-end
+            //- mints...
             template(v-for="mint in relatedAssets")
-              router-link.relative.group.block.mt-16(:to="'/tokens/' + mint.newTokenId")
+              mint-thumb.mt-16(:mint="mint")
+              //- router-link.relative.group.block.mt-16(:to="'/tokens/' + mint.newTokenId")
+                mint-image(:mint="mint")
+
                 img.w-full(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`")
                 //- original
                 .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
@@ -107,9 +115,11 @@
 
 <script>
 import Addr from '@/components/Addr'
+import MintImage from '@/components/MintImage'
+import MintThumb from '@/components/MintThumb'
 export default {
   name: 'NFT',
-  components: { Addr },
+  components: { Addr, MintImage, MintThumb },
   created () {
     this.getOwner()
     this.getMint()

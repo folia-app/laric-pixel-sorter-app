@@ -5,13 +5,21 @@
 
     template(v-else)
       .flex-1.w-full.grid.grid-cols-2.sm_grid-cols-3.lg_grid-cols-4.items-end.bg-gray-100
-        //- mints...
-        template(v-for="mint in mintsFiltered")
-          router-link.relative.group.block.mt-32(:to="'/tokens/' + mint.newTokenId")
-            img.w-full(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`")
-            //- original
-            .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
-              img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`")
+        template(v-for="n in 111")
+          //- mints...
+          template(v-for="(mint, i) in mintsFiltered")
+            mint-thumb.mt-32(:mint="mint")
+            //- router-link.relative.group.block(:to="'/tokens/' + mint.newTokenId")
+              //- | {{ n }} - {{ i }}
+              mint-image(:mint="mint")
+              //-
+                img.w-full(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`")
+                //- original
+                .absolute.overlay.z-10.transitionff.duration-1000ff.opacity-0.group-hover_opacity-100.bg-gray-100
+                  img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`")
+
+              .absolute.z-10.bottom-0.right-0.px-5.py-2.hidden.group-hover_block.group-hover_blend-difference
+                svg-eye.text-white
 
         //- divider
         //- .col-span-2.sm_col-span-3.lg_col-span-4
@@ -59,9 +67,11 @@
 import { mapState } from 'vuex'
 import SvgX from '@/components/SVG-X'
 import Chart from '@/components/Chart'
+import MintThumb from '@/components/MintThumb'
+import Observer from '@/components/Observer'
 export default {
   name: 'MintedResults',
-  components: { SvgX, Chart },
+  components: { SvgX, Chart, MintThumb, Observer },
   computed: {
     ...mapState(['mints']),
 

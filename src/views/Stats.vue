@@ -12,8 +12,8 @@
       .mt-8.px-2
         chart-pie-minted(:key="chartKey", :dataset="mintedChartDataset", size="100")
 
-    .h-screen
-    .h-screen
+    //- .h-screen
+    //- .h-screen
 </template>
 
 <script>

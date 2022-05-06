@@ -90,6 +90,7 @@ module.exports = {
       gray: {
         50: '#fafafa',
         100: '#f5f5f5',
+        150: '#eaeaea',
         200: '#e5e5e5',
         300: '#d4d4d4',
         350: '#c6c6c6',
@@ -837,7 +838,7 @@ module.exports = {
         '.text-columns-2': { columns: '2' }
       }
 
-      addUtilities(newUtilities, { variants: ['responsive'] })
+      addUtilities(newUtilities, { variants: ['responsive', 'group-hover'] })
     })
   ],
   purge: {

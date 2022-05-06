@@ -49,7 +49,7 @@
                 template(v-if="status")
                   .min-h-14.flex.items-center.justify-center.relative.bg-gray-800.text-white.text-sm.px-6.py-4(:class="{'bg-green-400': status.type === 'success', 'bg-red-duller': status.type === 'error' }")
                     //- msg
-                    span.break-all(:class="{'animate-pulse': status.msg.includes('...') }") {{ status.type === 'error' ? 'Error - ': '' }}{{ status.msg }}
+                    span.break-all(:class="{'animate-pulse': status.msg.includes('...') }") {{ status.msg }}
                     //- (tx link)
                     template(v-if="status.tx")
                      a.absolute.top-0.right-0.h-full.px-10.flex.items-center.w-48.justify-center(:href="`${$store.getters.network.explorer.domain}/tx/${status.tx.hash}`", target="_blank", rel="noopener noreferrer").bg-black-a45
@@ -154,7 +154,13 @@ export default {
         this.myMint = await this.$store.dispatch('findMint', { contract, tokenId })
       } catch (e) {
         console.error(e)
-        this.status = { type: 'error', msg: e.reason || e.message }
+        // check if puased
+        const paused = await this.$store.dispatch('getPaused')
+        //
+        const msg = paused ? 'Minting is not yet active.'
+          : 'Error - ' + (e.reason || e.message)
+        // show error to user
+        this.status = { type: 'error', msg }
       }
     },
 

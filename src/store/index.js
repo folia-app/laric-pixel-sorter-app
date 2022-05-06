@@ -492,6 +492,16 @@ export default new Vuex.Store({
       }
     },
 
+    async getPaused ({ state, dispatch }) {
+      try {
+        if (!state.controllerContract) await dispatch('init')
+        return state.controllerContract.paused()
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
     /* buy artwork */
     // async buy ({ state, dispatch, rootGetters }, workId) {
     //   try {

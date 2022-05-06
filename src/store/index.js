@@ -92,9 +92,9 @@ export default new Vuex.Store({
     meta: state => ({ title, descrip, img }) => {
       const meta = []
       // defaults
-      const siteTitle = 'Folia'
-      const siteDescrip = 'A space for collecting and exhibiting NFTs'
-      const siteImg = 'https://www.folia.app/folia-logo-twitter-black.png'
+      const siteTitle = 'Decomposer'
+      const siteDescrip = 'An interactive NFT collection by artist Oliver Laric, where collectors "decompose" NFTs from their own collection ~ presented by folia.app'
+      const siteImg = '/promo/decomposer-diagram.png'
       // custom
       title = title ? `${title}` : siteTitle
       descrip = descrip || siteDescrip

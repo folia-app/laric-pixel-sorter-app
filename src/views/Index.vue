@@ -279,7 +279,7 @@ export default {
   },
 
   metaInfo () {
-    if (this.$route.name === 'index') {
+    if (this.$route.name !== 'token') {
       return {
         meta: this.$store.getters.meta({})
       }

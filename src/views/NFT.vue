@@ -162,6 +162,17 @@ export default {
         console.error(e)
       }
     }
+  },
+  metaInfo () {
+    const title = this.sourceAsset ? `Decomposed ${this.sourceAsset.name}` : 'Decomposed ...'
+    const descrip = this.sourceAsset ? `from ${this.sourceAsset.collectionName}` : ''
+    const networkId = this.$store.state.networkId || 1
+    const img = this.$store && this.mint ? `/api/${networkId}/get/${this.mint.contractAddress}/${this.mint.tokenId}`
+      : undefined
+    return {
+      title,
+      meta: this.$store.getters.meta({ title, descrip, img })
+    }
   }
 }
 </script>

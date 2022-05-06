@@ -55,6 +55,7 @@ export default new Vuex.Store({
     collectionsList: undefined,
 
     mints: null,
+    mintCount: undefined,
     tokens: [],
 
     // old
@@ -192,6 +193,10 @@ export default new Vuex.Store({
 
     SAVE_MINTS (state, mints) {
       state.mints = mints
+    },
+
+    SET_MINT_COUNT (state, count) {
+      state.mintCount = count
     }
   },
   actions: {
@@ -423,7 +428,7 @@ export default new Vuex.Store({
 
         // fetch all events
         const events = await state.controllerContract.queryFilter('newContract', fromBlock)
-        console.log({ newContractEvents: events })
+        // console.log({ newContractEvents: events })
         // TODO factor REMOVE CONTRACT?
 
         // format
@@ -462,10 +467,28 @@ export default new Vuex.Store({
       }
     },
 
-    async getTotalMints ({ state, dispatch }) {
+    async getMintCount ({ state, commit, dispatch }) {
       try {
         if (!state.nftContract) await dispatch('init')
-        return state.nftContract.totalSupply()
+        const count = await state.nftContract.totalSupply()
+        commit('SET_MINT_COUNT', count)
+        return count
+      } catch (e) {
+        console.error(e)
+        throw e
+      }
+    },
+
+    async listenForMints ({ state, dispatch }) {
+      try {
+        if (!state.controllerContract) await dispatch('init')
+        // TODO - cancel if sold out?
+        state.controllerContract.on('editionBought', (contractAddress, tokenId, newTokenId) => {
+          console.log('new mint!', { contractAddress, tokenId, newTokenId })
+          dispatch('getMintCount')
+          dispatch('getMints', {})
+        })
+        console.log('listening for mints...')
       } catch (e) {
         console.error(e)
         throw e
@@ -485,6 +508,7 @@ export default new Vuex.Store({
         const price = await dispatch('getMintPrice')
         // confirm...
         const tx = await contractSigner.buy(state.address, contract, tokenId, { value: price.toString() })
+        console.log('my new mint tx:', tx)
         return tx
       } catch (e) {
         console.error(e)

@@ -14,7 +14,7 @@
 
           .mt-3.flex.justify-end
             .h-12.bg-gray-100.text-xs.px-6.flex.items-center
-              span.animate-pulse {{ totalMints !== undefined ? totalMints : '...' }}/888 Mints
+              span.animate-pulse {{ mintCount !== undefined ? mintCount : '...' }}/888 Mints
 
           ol
             //- connect step
@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
 import NftSelector from '@/components/NFTSelector'
 import SvgX from '@/components/SVG-X'
@@ -114,13 +115,12 @@ export default {
       selection: null,
       tx: null,
       status: null,
-      myMint: null,
-      totalMints: undefined,
-      checkMintsTmOut: null
+      myMint: null
     }
   },
 
   computed: {
+    ...mapState(['mintCount']),
     isConnected () {
       return this.$store.state.address
     }
@@ -166,26 +166,27 @@ export default {
 
     goToMinted () {
       return this.$router.push({ name: 'token', params: { token: this.myMint.args.newTokenId.toString() } })
-    },
-
-    async getTotalMints () {
-      this.totalMints = await this.$store.dispatch('getTotalMints')
-    },
-
-    listenForMints (interval = 3000) {
-      this.checkMintsTmOut = setTimeout(() => {
-        this.getTotalMints()
-        this.listenForMints(interval)
-      }, interval)
     }
+
+    // async getTotalMints () {
+    //   this.totalMints = await this.$store.dispatch('getTotalMints')
+    // },
+
+    // listenForMints (interval = 3000) {
+    //   this.checkMintsTmOut = setTimeout(() => {
+    //     this.getTotalMints()
+    //     this.listenForMints(interval)
+    //   }, interval)
+    // }
   },
 
   created () {
+    this.$store.dispatch('getMintCount')
     this.$store.dispatch('getMintPrice')
   },
 
   mounted () {
-    this.listenForMints(3000)
+    // this.listenForMints(3000)
   },
 
   watch: {

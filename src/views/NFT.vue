@@ -147,7 +147,9 @@ export default {
     },
     async getMint () {
       try {
-        await this.$store.dispatch('getMints', { cached: true })
+        // const cached = this.$route.params.new ? false : true
+        // fetch...
+        await this.$store.dispatch('getMints', { cached: false })
         this.mint = this.$store.state.mints.find(mint => mint.newTokenId === this.$route.params.token)
 
         if (this.mint) {

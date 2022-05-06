@@ -15,7 +15,7 @@
       //- * placeholder when outputLoaded = false
       //- * overlay when outputLoaded = true
       template(v-if="loadInput")
-        img.w-full(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad")
+        img.w-full(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
 
     //- (loading overlay text)
     template(v-if="outputLoaded === false")
@@ -61,6 +61,9 @@ export default {
       // return
 
       this.inputLoaded = true
+    },
+    onInputLoadError () {
+      this.inputLoaded = false
     },
     onOutputLoad () {
       if (this.visible) {

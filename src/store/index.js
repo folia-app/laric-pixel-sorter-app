@@ -872,14 +872,15 @@ export default new Vuex.Store({
 
         const prefix = state.networkId === 1 ? '' : 'testnets-'
         const domain = `https://${prefix}api.opensea.io`
+        const headers = {}
+
+        // need API key?
+        if (state.networkId === 1 && process.env.NODE_ENV !== 'development') {
+          headers['X-API-KEY'] = 'e74704784fe64c60a67b89239e3e75e0'
+        }
 
         // fetch...
-        const resp = await fetch(domain + path, {
-          // method: 'GET',
-          headers: {
-            // "X-API-KEY": "2d9c3cb197314169a26448452856faec"
-          }
-        })
+        const resp = await fetch(domain + path, headers)
 
         if (resp.status === 200) {
           // good!

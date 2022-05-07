@@ -9,13 +9,19 @@
     template(v-if="mint")
       //- (output image)
       template(v-if="loadOutput")
-        img.w-full.transition.duration-200(:src="`https://res.cloudinary.com/folia/image/fetch/https://decomposer.folia.app/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`", :class="{'opacity-0': !outputLoaded, 'hidden': outputLoaded === false}", @error="onOutputLoadError", @load="onOutputLoad",)
+        //- w cloudinary
+        //- img.w-full.transition.duration-200(:src="`https://res.cloudinary.com/folia/image/fetch/https://decomposer.folia.app/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`", :class="{'opacity-0': !outputLoaded, 'hidden': outputLoaded === false}", @error="onOutputLoadError", @load="onOutputLoad",)
+        //- direct
+        img.w-full.transition.duration-200(:src="`/api/${$store.state.networkId}/get/${mint.contractAddress}/${mint.tokenId}`", :class="{'opacity-0': !outputLoaded, 'hidden': outputLoaded === false}", @error="onOutputLoadError", @load="onOutputLoad",)
 
       //- (input image)
       //- * placeholder when outputLoaded = false
       //- * overlay when outputLoaded = true
       template(v-if="loadInput")
-        img.w-full(:src="`https://res.cloudinary.com/folia/image/fetch/https://decomposer.folia.app/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
+        //- cloudinary
+        //- img.w-full(:src="`https://res.cloudinary.com/folia/image/fetch/https://decomposer.folia.app/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
+        //- direct
+        img.w-full(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
 
     //- (loading overlay text)
     template(v-if="outputLoaded === false")

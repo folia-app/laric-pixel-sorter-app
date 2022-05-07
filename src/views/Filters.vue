@@ -10,7 +10,7 @@
 
           ul.flex-1.flex.flex-col
             //- collections...
-            li.h-20.flex.w-full.items-stretch(v-for="(collection, i) in whitelistByNetwork", :class="{'bg-gray-100': i % 2 === 0, 'order-first': !isEmptyCollection(collection) }")
+            li.h-20.flex.w-full.items-stretch(v-for="(collection, i) in whitelistByNetwork", :class="{'bg-gray-100ff': i % 2 === 0, 'order-first': !isEmptyCollection(collection) }")
               button.block.flex-1.flex.min-w-0.items-stretch.group(@click="toggleFilter(collection)", :disabled="isEmptyCollection(collection)", :class="{'opacity-25': isEmptyCollection(collection)}")
                 //- check mark
                 .w-20.bg-black-a03.group-hover_bg-gray-200.flex.items-center.justify-center

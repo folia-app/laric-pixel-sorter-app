@@ -6,8 +6,9 @@
 
       .md_absolute.top-0.right-0.h-full.flex.items-center.text-xs
         .mr-5.opacity-50
-          template(v-if="editionsLeft === undefined") .../88
-          template(v-else) {{ 88 - editionsLeft }}/88 #[span.hidden.sm_inline Mints]
+          //- template(v-if="editionsLeft === undefined") .../88
+          //- template(v-else) {{ 88 - editionsLeft }}/88 #[span.hidden.sm_inline Mints]
+          | max 88
         svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
     //- div.text-center {{ collection.address }}
@@ -81,5 +82,9 @@ export default {
 <style scoped lang="postcss">
 details[open] summary .transform{
   @apply rotate-180
+}
+
+details summary::-webkit-details-marker {
+  display:none;
 }
 </style>

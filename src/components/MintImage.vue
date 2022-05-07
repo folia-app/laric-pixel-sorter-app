@@ -21,7 +21,7 @@
         //- cloudinary
         //- img.w-full(:src="`https://res.cloudinary.com/folia/image/fetch/https://decomposer.folia.app/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
         //- direct
-        img.w-full(:src="`https://res.cloudinary.com/folia/image/fetch/https://decomposer.folia.app/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100 bg-white': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
+        img.w-full(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`", :class="{'absolute overlay opacity-0 group-hover_opacity-100 bg-white': outputLoaded, 'opacity-0': !inputLoaded, 'hidden': inputLoaded === false}", @load="onInputLoad", @error="onInputLoadError")
 
     //- (loading overlay text)
     template(v-if="outputLoaded === false")

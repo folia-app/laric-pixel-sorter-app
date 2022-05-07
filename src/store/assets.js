@@ -3,7 +3,7 @@
 export default {
   namespaced: true,
   state: {
-    // myAssets: [], // connected wallet assets
+    myAssets: [], // connected wallet assets
     sourceAssets: {} // opensea data on source assets
   },
 
@@ -41,15 +41,22 @@ export default {
         address = address.toLowerCase()
         cursor = cursor ? `&cursor=${cursor}` : ''
         const limit = '&limit=50'
-        // filter by our contracts
+
+        // wait for contract list?
         if (!getters.contracts) await dispatch('getCollectionsList', null, { root: true })
-        const contracts = getters.contracts.map(addr => '&asset_contract_addresses=' + addr.toLowerCase()).join('')
+        // filter by contract
+        // EDIT: (TOO MANY GIVES 400 on OS API)
+        // let contracts = getters.contracts.map(addr => '&asset_contract_addresses=' + addr.toLowerCase())
+        // contracts = contracts.join('')
 
         // fetch from opensea...
-        const json = await dispatch('fetchFromOpenSea', { path: `/api/v1/assets?owner=${address}${limit}${cursor}${contracts}` }, { root: true })
+        const json = await dispatch('fetchFromOpenSea', { path: `/api/v1/assets?owner=${address}${limit}${cursor}` }, { root: true })
+
+        // filter for elligible assets
+        let assets = json.assets.filter(asset => getters.contracts.includes(asset.asset_contract.address.toLowerCase()))
 
         // format
-        const assets = json.assets.map(asset => ({
+        assets = assets.map(asset => ({
           collection: {
             name: asset.asset_contract.name,
             address: asset.asset_contract.address

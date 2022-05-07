@@ -8,7 +8,7 @@
         .mr-5.opacity-50
           //- template(v-if="editionsLeft === undefined") .../88
           //- template(v-else) {{ 88 - editionsLeft }}/88 #[span.hidden.sm_inline Mints]
-          | max 88
+          //- | max 88
         svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
     //- div.text-center {{ collection.address }}

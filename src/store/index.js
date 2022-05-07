@@ -868,12 +868,13 @@ export default new Vuex.Store({
         const headers = {}
 
         // need API key?
-        if (state.networkId === 1 && process.env.NODE_ENV !== 'development') {
+        if (state.networkId === 1) {
           headers['X-API-KEY'] = 'e74704784fe64c60a67b89239e3e75e0'
         }
+        // console.log(headers)
 
         // fetch...
-        const resp = await fetch(domain + path, headers)
+        const resp = await fetch(domain + path, { headers })
 
         if (resp.status === 200) {
           // good!

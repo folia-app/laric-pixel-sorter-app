@@ -5,14 +5,12 @@ import NFTContract from '../../contracts/Token'
 import Controller from '../../contracts/Controller'
 import whitelist from '@/whitelist'
 // ethers
-import { ethers, BigNumber as bn } from 'ethers'
+import { ethers } from 'ethers'
 // import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { exception } from 'vue-gtag'
+// import { exception } from 'vue-gtag'
 // modules
-import prismic from './prismic'
-import auctions from './auctions'
 import assets from './assets' // connected wallet assets
 
 let provider, signer, walletProvider, initializing, web3
@@ -42,7 +40,7 @@ const web3Modal = new Web3Modal({
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules: { prismic, auctions, assets },
+  modules: { assets },
   state: {
     address: null,
     networkId: null, // wallet network
@@ -171,10 +169,6 @@ export default new Vuex.Store({
       // controller
       state.controllerContract = new ethers.Contract(Controller.networks[chainId].address, Controller.abi, provider)
       console.log('controller:', Controller.networks[chainId].address)
-
-      // auctions
-      // state.reserveAuctionContract = new ethers.Contract(ReserveAuction.networks[chainId].address, ReserveAuction.abi, provider)
-      // console.log('auctions:', ReserveAuction.networks[chainId].address)
     },
 
     SAVE_ADDRESS (state, { address, ens, openSea }) {
@@ -499,7 +493,6 @@ export default new Vuex.Store({
       try {
         // wait for init?
         if (!state.controllerContract) await dispatch('init')
-
         // connect wallet?
         if (!state.address || !signer) await dispatch('connect')
 
@@ -604,44 +597,44 @@ export default new Vuex.Store({
     // },
 
     /* buy token by id */
-    async buyByID ({ state, dispatch, rootGetters }, { tokenId }) {
-      try {
-        const workId = Math.floor(tokenId / 1000000) // 12
-        const workSpace = workId * 1000000 // 12000000
-        const editionId = tokenId - workSpace // 1
+    // async buyByID ({ state, dispatch, rootGetters }, { tokenId }) {
+    //   try {
+    //     const workId = Math.floor(tokenId / 1000000) // 12
+    //     const workSpace = workId * 1000000 // 12000000
+    //     const editionId = tokenId - workSpace // 1
 
-        // get work...
-        const work = await dispatch('getWork', { id: workId, flush: true })
+    //     // get work...
+    //     const work = await dispatch('getWork', { id: workId, flush: true })
 
-        // !! unavailable
-        if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
-        // !! paused
-        if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
+    //     // !! unavailable
+    //     if (!work.exists) throw new Error(`!! Work ${workId} doesn't exist`)
+    //     // !! paused
+    //     if (work.paused) throw new Error(`!! Work ${workId} is locked. Please wait for release or try again shortly.`)
 
-        // wallet connected ?
-        if (!state.address || !signer) await dispatch('connect')
+    //     // wallet connected ?
+    //     if (!state.address || !signer) await dispatch('connect')
 
-        // !! not enough ETH
-        const balance = await rootGetters.userBalance()
-        if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
+    //     // !! not enough ETH
+    //     const balance = await rootGetters.userBalance()
+    //     if (bn.from(balance).lt(work.price)) throw new Error(`!! Insufficient funds in your wallet\n${state.address}`)
 
-        // sign...
-        const contractSigner = state.controllerContract.connect(signer)
-        // tx
-        return contractSigner.buyByID(state.address, workId, editionId, { value: work.price })
+    //     // sign...
+    //     const contractSigner = state.controllerContract.connect(signer)
+    //     // tx
+    //     return contractSigner.buyByID(state.address, workId, editionId, { value: work.price })
 
-        // refresh work data for app
-        // dispatch('getWork', { id: workId, flush: true })
-      } catch (e) {
-        console.error('@buyByID:', e)
-        // track
-        exception({ description: `@buyByID: ${e.message}`, fatal: false })
-        // TODO - more elegant UX error ?
-        if (e.message?.includes('!! ')) {
-          alert(e.message.replace('!! ', ''))
-        }
-      }
-    },
+    //     // refresh work data for app
+    //     // dispatch('getWork', { id: workId, flush: true })
+    //   } catch (e) {
+    //     console.error('@buyByID:', e)
+    //     // track
+    //     exception({ description: `@buyByID: ${e.message}`, fatal: false })
+    //     // TODO - more elegant UX error ?
+    //     if (e.message?.includes('!! ')) {
+    //       alert(e.message.replace('!! ', ''))
+    //     }
+    //   }
+    // },
 
     /* read artwork */
     // async getWork ({ state, commit }, { id, flush }) {
@@ -666,70 +659,70 @@ export default new Vuex.Store({
     // },
 
     /* read work from chain */
-    async getWork ({ state, commit, dispatch }, { id, flush }) {
-      try {
-        // saved?
-        let work = state.works.find(work => work.id === id)
-        if (!flush && work) return work
+    // async getWork ({ state, commit, dispatch }, { id, flush }) {
+    //   try {
+    //     // saved?
+    //     let work = state.works.find(work => work.id === id)
+    //     if (!flush && work) return work
 
-        // !! invalid id
-        if (!id || isNaN(id)) {
-          throw new Error(`invalid work id: ${id}`)
-        }
+    //     // !! invalid id
+    //     if (!id || isNaN(id)) {
+    //       throw new Error(`invalid work id: ${id}`)
+    //     }
 
-        if (!state.controllerContract) {
-          await dispatch('init')
-        }
+    //     if (!state.controllerContract) {
+    //       await dispatch('init')
+    //     }
 
-        // fetch...
-        work = await state.controllerContract.works(id)
-        work = { id, ...work } // add id
-        // save
-        commit('SAVE_WORK', work)
-        return work
-      } catch (e) {
-        console.warn('@getWork', e)
-        return null
-      }
-    },
+    //     // fetch...
+    //     work = await state.controllerContract.works(id)
+    //     work = { id, ...work } // add id
+    //     // save
+    //     commit('SAVE_WORK', work)
+    //     return work
+    //   } catch (e) {
+    //     console.warn('@getWork', e)
+    //     return null
+    //   }
+    // },
 
     /* get metadata of work (if released) */
-    async getMetadata ({ state, commit }, { token, work, isViewer = false }) {
-      try {
-        token = token || Number(work) * 1000000
-        work = work || Math.floor(Number(token) / 1000000)
+    // async getMetadata ({ state, commit }, { token, work, isViewer = false }) {
+    //   try {
+    //     token = token || Number(work) * 1000000
+    //     work = work || Math.floor(Number(token) / 1000000)
 
-        // !! is not a number
-        if (isNaN(token)) throw new Error(`Token ID is not a number: ${token}`)
+    //     // !! is not a number
+    //     if (isNaN(token)) throw new Error(`Token ID is not a number: ${token}`)
 
-        // return saved ?
-        const saved = state.metadatas.find(metadata => metadata._token === token)
-        const now = new Date().getTime()
-        const release = saved && saved.release && new Date(saved.release).getTime()
-        const hasSinceReleased = release && release > 0 && now >= release
-        if (saved && !hasSinceReleased) {
-          return saved
-        }
-        // fetch new
-        // query parameters
-        let params = []
-        if (state.networkId) params.push(`network=${state.networkId}`)
-        if (isViewer) params.push('viewer=1')
-        params = params.length ? '?' + params.join('&') : ''
-        const url = `/.netlify/functions/metadata/${token}${params}`
-        // go!
-        let metadata = await fetch(url).then(resp => resp.json())
-        // process
-        if (metadata && metadata.name) {
-          metadata = { _work: work, _token: token, ...metadata }
-          commit('SAVE_METADATA', metadata)
-          return metadata
-        }
-        return null
-      } catch (e) {
-        console.error(e)
-      }
-    },
+    //     // return saved ?
+    //     const saved = state.metadatas.find(metadata => metadata._token === token)
+    //     const now = new Date().getTime()
+    //     const release = saved && saved.release && new Date(saved.release).getTime()
+    //     const hasSinceReleased = release && release > 0 && now >= release
+    //     if (saved && !hasSinceReleased) {
+    //       return saved
+    //     }
+    //     // fetch new
+    //     // query parameters
+    //     let params = []
+    //     if (state.networkId) params.push(`network=${state.networkId}`)
+    //     if (isViewer) params.push('viewer=1')
+    //     params = params.length ? '?' + params.join('&') : ''
+    //     const url = `/.netlify/functions/metadata/${token}${params}`
+    //     // go!
+    //     let metadata = await fetch(url).then(resp => resp.json())
+    //     // process
+    //     if (metadata && metadata.name) {
+    //       metadata = { _work: work, _token: token, ...metadata }
+    //       commit('SAVE_METADATA', metadata)
+    //       return metadata
+    //     }
+    //     return null
+    //   } catch (e) {
+    //     console.error(e)
+    //   }
+    // },
 
     /* read owner by token id from chain */
     async getNFTOwnerByTokenId ({ state, commit, dispatch }, tokenId) {
@@ -755,68 +748,68 @@ export default new Vuex.Store({
     // web3.js currently has no method (v1.7)
     // adapted from this guide:
     // * https://medium.com/metamask/scaling-web3-with-signtypeddata-91d6efc8b290
-    async signMessage ({ state, dispatch }, message = 'Please sign this message to continue.') {
-      try {
-        if (!state.address) await dispatch('connect')
+    // async signMessage ({ state, dispatch }, message = 'Please sign this message to continue.') {
+    //   try {
+    //     if (!state.address) await dispatch('connect')
 
-        // build msg(s)
-        const msgParams = [
-          {
-            type: 'string', // Any valid solidity type
-            name: 'Message', // Any string label you want
-            value: message // The value to sign
-          }
-          // {
-          //   type: 'uint32',
-          //      name: 'A number',
-          //      value: '1337'
-          //  }
-        ]
+    //     // build msg(s)
+    //     const msgParams = [
+    //       {
+    //         type: 'string', // Any valid solidity type
+    //         name: 'Message', // Any string label you want
+    //         value: message // The value to sign
+    //       }
+    //       // {
+    //       //   type: 'uint32',
+    //       //      name: 'A number',
+    //       //      value: '1337'
+    //       //  }
+    //     ]
 
-        // sign...
-        return new Promise((resolve, reject) => {
-          web3.currentProvider.sendAsync({
-            method: 'eth_signTypedData',
-            params: [msgParams, state.address],
-            from: state.address
-          }, (err, result) => {
-            // errors
-            err = err || result.error
-            if (err) {
-              reject(err)
-            }
-            console.log('Signed message: ', result)
-            // return signature
-            resolve({ msgParams, signature: result.result })
-          })
-        })
-      } catch (e) {
-        console.error(e)
-        throw e
-      }
-    },
+    //     // sign...
+    //     return new Promise((resolve, reject) => {
+    //       web3.currentProvider.sendAsync({
+    //         method: 'eth_signTypedData',
+    //         params: [msgParams, state.address],
+    //         from: state.address
+    //       }, (err, result) => {
+    //         // errors
+    //         err = err || result.error
+    //         if (err) {
+    //           reject(err)
+    //         }
+    //         console.log('Signed message: ', result)
+    //         // return signature
+    //         resolve({ msgParams, signature: result.result })
+    //       })
+    //     })
+    //   } catch (e) {
+    //     console.error(e)
+    //     throw e
+    //   }
+    // },
 
-    async signMessageEthers ({ state, dispatch }, message = 'Please sign this message to continue.') {
-      try {
-        if (!signer) await dispatch('connect')
+    // async signMessageEthers ({ state, dispatch }, message = 'Please sign this message to continue.') {
+    //   try {
+    //     if (!signer) await dispatch('connect')
 
-        // const provider = new ethers.providers.Web3Provider(window.ethereum)
+    //     // const provider = new ethers.providers.Web3Provider(window.ethereum)
 
-        // MetaMask requires requesting permission to connect users accounts
-        // await provider.send("eth_requestAccounts", []);
+    //     // MetaMask requires requesting permission to connect users accounts
+    //     // await provider.send("eth_requestAccounts", []);
 
-        // const signer = provider.getSigner()
+    //     // const signer = provider.getSigner()
 
-        // message = 'hello world'
-        const signature = await signer.signMessage(message)
-        console.log({ signature })
+    //     // message = 'hello world'
+    //     const signature = await signer.signMessage(message)
+    //     console.log({ signature })
 
-        return { signature }
-      } catch (e) {
-        console.error(e)
-        throw e
-      }
-    },
+    //     return { signature }
+    //   } catch (e) {
+    //     console.error(e)
+    //     throw e
+    //   }
+    // },
 
     async resolveAddress ({ state, getters, commit, dispatch }, { address, queryOpenSea = false }) {
       try {

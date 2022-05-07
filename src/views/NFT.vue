@@ -177,8 +177,14 @@ export default {
     const title = this.sourceAsset ? `Decomposed ${this.sourceAsset.name}` : 'Decomposed ...'
     const descrip = this.sourceAsset ? `from ${this.sourceAsset.collectionName}` : ''
     const networkId = this.$store.state.networkId || 1
-    const img = this.$store && this.mint ? `/api/${networkId}/get/${this.mint.contractAddress}/${this.mint.tokenId}`
+    const img = this.$store && this.mint ? `${window.location.origin}/api/${networkId}/get/${this.mint.contractAddress}/${this.mint.tokenId}`
       : undefined
+
+    if (this.mint && this.sourceAsset) {
+      console.log('prerender ready')
+      window.prerenderReady = true
+    }
+
     return {
       title,
       meta: this.$store.getters.meta({ title, descrip, img })

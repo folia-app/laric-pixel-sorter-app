@@ -128,7 +128,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import Logo from '@/components/Logo'
+// import Logo from '@/components/Logo'
 import svgFleuron from '@/components/SVG-Fleuron'
 // import Info from '@/components/Info'
 // import WorkThumb from '@/components/WorkThumb'
@@ -136,16 +136,17 @@ import Btn from '@/components/Btn'
 // import WorkView from '@/views/Work'
 import MintView from '@/views/Mint'
 import NftView from '@/views/NFT'
-import Info from '@/views/Info'
+// import Info from '@/views/Info'
 import Filters from '@/views/Filters'
 import Stats from '@/views/Stats'
-import ViewToken from '@/views/ViewToken'
-import LandingSlideWork from '@/components/LandingSlideWork'
-import RichText from '@/components/RichText'
-import linkResolver from '@/plugins/prismic/link-resolver'
-import SliceTile from '@/slices/SliceTile'
-import SliceAuctions from '@/slices/SliceAuctions'
-import SliceAnnouncement from '@/slices/SliceAnnouncement'
+
+// import ViewToken from '@/views/ViewToken'
+// import LandingSlideWork from '@/components/LandingSlideWork'
+// import RichText from '@/components/RichText'
+// import linkResolver from '@/plugins/prismic/link-resolver'
+// import SliceTile from '@/slices/SliceTile'
+// import SliceAuctions from '@/slices/SliceAuctions'
+// import SliceAnnouncement from '@/slices/SliceAnnouncement'
 import Observer from '@/components/Observer'
 import ConnectDisconnectBtn from '@/components/ConnectDisconnectBtn'
 import SvgX from '@/components/SVG-X'
@@ -153,19 +154,19 @@ import MintedResults from '@/components/MintedResults'
 import Chart from '@/components/Chart'
 
 import whitelist from '@/whitelist'
-let lastRt
+// let lastRt
 export default {
   name: 'Index',
-  components: { Stats, SliceTile, MintView, NftView, Filters, Logo, Info, svgFleuron, Btn, LandingSlideWork, ViewToken, RichText, SliceAuctions, SliceAnnouncement, Observer, ConnectDisconnectBtn, SvgX, MintedResults, Chart },
+  components: { Stats, MintView, NftView, Filters, svgFleuron, Btn, Observer, ConnectDisconnectBtn, SvgX, MintedResults, Chart },
   data () {
     return {
       squish: false,
       infoVisible: false,
       // workPanel: this.$route.name === 'work',
       panelOpen: this.$route.meta.layout === 'panel',
-      current: 0,
+      // current: 0,
       panelWidths: [],
-      carouselTimer: null,
+      // carouselTimer: null,
       whitelist,
       whitelistExcerpted: true,
       filtersVisible: false
@@ -173,23 +174,23 @@ export default {
   },
   computed: {
     ...mapState({
-      home: state => state.prismic.docs.find(doc => doc.type === 'home')?.data,
-      address: state => state.address,
+      // home: state => state.prismic.docs.find(doc => doc.type === 'home')?.data,
+      // address: state => state.address,
       // doc: state => state.prismic.
       // workDocs: state => state.prismic.works,
-      metadatas: state => state.metadatas
+      // metadatas: state => state.metadatas
     }),
     ...mapGetters({
-      workDocs: 'prismic/works',
-      workId: 'workId'
-    }),
-    viewToken () {
-      // return this.$route.name === 'view-token' ? this.$route.params.token : null
-      return this.$route.name?.endsWith('-tokenviewer')
-    },
-    carouselEnabled () {
-      return this.home?.landing.length > 1
-    }
+      // workDocs: 'prismic/works',
+      // workId: 'workId'
+    })
+    // viewToken () {
+    //   // return this.$route.name === 'view-token' ? this.$route.params.token : null
+    //   return this.$route.name?.endsWith('-tokenviewer')
+    // },
+    // carouselEnabled () {
+    //   return this.home?.landing.length > 1
+    // }
   },
   methods: {
     async openInfoOverlay () {
@@ -210,16 +211,17 @@ export default {
     },
 
     // ==================
-    linkResolver,
-    next () {
-      this.current = this.current + 1 === this.workDocs.length ? 0 : this.current + 1
-    },
-    onLogoClick () {
-      document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
-    },
-    closeViewer () {
-      return lastRt?.name ? this.$router.go(-1) : this.$router.push('/')
-    },
+    // linkResolver,
+    // next () {
+    //   this.current = this.current + 1 === this.workDocs.length ? 0 : this.current + 1
+    // },
+    // onLogoClick () {
+    //   document.getElementById('info').scrollIntoView({ behavior: 'smooth' })
+    // },
+    // closeViewer () {
+    //   return lastRt?.name ? this.$router.go(-1) : this.$router.push('/')
+    // },
+
     setPanelWidths () {
       // [body, work-panel]
       const wide = ['scale-x-5 sm_scale-x-20 lg_scale-x-33', 'w-19x20 sm_w-4x5 lg_w-2x3']
@@ -254,15 +256,15 @@ export default {
     }
   },
 
-  beforeRouteEnter (to, from, next) {
-    lastRt = from
-    next()
-  },
+  // beforeRouteEnter (to, from, next) {
+  //   lastRt = from
+  //   next()
+  // },
 
-  beforeRouteUpdate (to, from, next) {
-    lastRt = from
-    next()
-  },
+  // beforeRouteUpdate (to, from, next) {
+  //   lastRt = from
+  //   next()
+  // },
 
   created () {
     // init view
@@ -272,14 +274,16 @@ export default {
   watch: {
     '$route' (to, from) {
       this.onRoute(to, from)
-    },
-    workDocs () {
-      this.setPanelWidths()
     }
+    // workDocs () {
+    //   this.setPanelWidths()
+    // }
   },
 
   metaInfo () {
     if (this.$route.name !== 'token') {
+      console.log('prerender ready')
+      window.prerenderReady = true
       return {
         meta: this.$store.getters.meta({})
       }

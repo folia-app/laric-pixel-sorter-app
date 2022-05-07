@@ -2,11 +2,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import 'lazysizes'
-import PrismicVue from '@prismicio/vue'
-import linkResolver from '@/plugins/prismic/link-resolver.js'
+// import 'lazysizes'
 import VueMeta from 'vue-meta'
-import analytics from './plugins/vue-gtag'
+// import analytics from './plugins/vue-gtag'
 
 // netlify pre-rendering (set to true elsewhere in app, otherwise rendered after 10s)
 window.prerenderReady = false
@@ -33,11 +31,6 @@ window.prerenderReady = false
 //     })
 //   )
 // }
-
-Vue.use(PrismicVue, {
-  endpoint: `https://${process.env.VUE_APP_PRISMIC_REPO}.cdn.prismic.io/api/v2`,
-  linkResolver
-})
 
 Vue.use(VueMeta)
 
@@ -69,7 +62,7 @@ pwd(() => {
     components: { App },
     template: '<App/>',
     mounted () {
-      analytics()
+      // analytics()
       console.log('mntd')
     }
   })

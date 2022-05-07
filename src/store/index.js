@@ -92,7 +92,7 @@ export default new Vuex.Store({
       // defaults
       const siteTitle = 'Decomposer'
       const siteDescrip = 'An interactive NFT collection by artist Oliver Laric, where collectors "decompose" NFTs from their own collection ~ presented by folia.app'
-      const siteImg = '/promo/decomposer-diagram.png'
+      const siteImg = window.location.origin + '/promo/decomposer-diagram.png'
       // custom
       title = title ? `${title}` : siteTitle
       descrip = descrip || siteDescrip

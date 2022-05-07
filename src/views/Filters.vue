@@ -8,10 +8,10 @@
             button.w-20.absolute.top-0.left-0.h-full.flex.items-center.justify-center.mouse_hover_bg-black-a08(@click="$emit('close')") &larr;
             h2.uppercase.tracking-wide Filter
 
-          ul.flex-1
+          ul.flex-1.flex.flex-col
             //- collections...
-            li.h-20.flex.w-full.items-stretch(v-for="(collection, i) in whitelistByNetwork", :class="{'bg-gray-100': i % 2 === 0}")
-              button.block.flex-1.flex.min-w-0.items-stretch.group(@click="toggleFilter(collection)")
+            li.h-20.flex.w-full.items-stretch(v-for="(collection, i) in whitelistByNetwork", :class="{'bg-gray-100': i % 2 === 0, 'order-first': !isEmptyCollection(collection) }")
+              button.block.flex-1.flex.min-w-0.items-stretch.group(@click="toggleFilter(collection)", :disabled="isEmptyCollection(collection)", :class="{'opacity-25': isEmptyCollection(collection)}")
                 //- check mark
                 .w-20.bg-black-a03.group-hover_bg-gray-200.flex.items-center.justify-center
                   .h-3.w-3.rounded-full.bg-gray-400(v-if="isActive(collection)")
@@ -59,6 +59,11 @@ export default {
     },
     networkIndex () {
       return this.$store.state.networkId === 4 ? 3 : 2
+    },
+    mintedContracts () {
+      let contracts = this.$store.state.mints?.map(mint => mint.contractAddress) || []
+      contracts = [...new Set(contracts)] // de-dupe
+      return contracts
     }
   },
   methods: {
@@ -86,6 +91,9 @@ export default {
     isActive (collection) {
       const address = collection[this.networkIndex]
       return (this.$route.query.collections?.split(',') || []).includes(address)
+    },
+    isEmptyCollection (collection) {
+      return !this.mintedContracts.includes(collection[this.networkIndex].toLowerCase())
     }
   }
 }

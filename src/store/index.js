@@ -422,7 +422,7 @@ export default new Vuex.Store({
 
         // fetch all events
         const events = await state.controllerContract.queryFilter('newContract', fromBlock)
-        // console.log({ newContractEvents: events })
+        // console.log({ newContractEvents: events.map(e => e.args[0]).filter(addr => addr.toLowerCase() === '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a'.toLowerCase()) })
         // TODO factor REMOVE CONTRACT?
 
         // format

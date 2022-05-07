@@ -58,7 +58,7 @@ export default {
         // format
         assets = assets.map(asset => ({
           collection: {
-            name: asset.asset_contract.name,
+            name: asset.collection?.name || asset.asset_contract.name,
             address: asset.asset_contract.address
           },
           tokenId: asset.token_id,

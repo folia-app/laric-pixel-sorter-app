@@ -65,6 +65,7 @@ export default [
   ['Metasaurs by Dr. DMT', 'https://opensea.io/collection/metasaurs-nft', '0xF7143Ba42d40EAeB49b88DaC0067e54Af042E963'],
   ['MoonCats', 'https://opensea.io/collection/acclimatedmooncats', '0xc3f733ca98E0daD0386979Eb96fb1722A1A05E69'],
   ['Mutant Ape Yacht Club', 'https://opensea.io/collection/mutant-ape-yacht-club', '0x60E4d786628Fea6478F785A6d7e704777c86a7c6'],
+  ['Mutant Garden Seeder', 'https://opensea.io/collection/mutant-garden-seeder', '0x20c70bdfcc398c1f06ba81730c8b52ace3af7cc3'],
   // ['My Curio Cards', 'https://opensea.io/collection/curiocardswrapper'],
   ['Nouns', 'https://opensea.io/collection/nouns', '0x9C8fF314C9Bc7F6e59A9d9225Fb22946427eDC03'],
   ['PEACEFUL GROUPIES', 'https://opensea.io/collection/peaceful-groupies', '0x4f89Cd0CAE1e54D98db6a80150a824a533502EEa'],

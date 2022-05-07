@@ -1,7 +1,7 @@
 <template lang="pug">
   section.nft-selector
     //- (loading)
-    template(v-if="!collections")
+    template(v-if="status")
       .h-24.flex.items-center.justify-center.bg-gray-100(:class="{'animate-pulse': status.includes('...') }")
         | {{ status }}
 
@@ -56,8 +56,11 @@ export default {
       try {
         this.status = 'Loading...'
 
+        // owner (optional as query param)
+        const address = this.$route.query.wallet?.toLowerCase() || this.address
+
         // fetch...
-        const assets = await this.$store.dispatch('assets/getWalletAssets', { address: this.address })
+        const assets = await this.$store.dispatch('assets/getWalletAssets', { address })
 
         // get names
         let collections = assets.map(asset => asset.collection.name)
@@ -80,6 +83,12 @@ export default {
         })
 
         this.collections = collections
+
+        if (!this.collections.length) {
+          this.status = 'No elligible NFTs (See INFO)'
+        } else {
+          this.status = null
+        }
       } catch (e) {
         console.error(e)
         this.status = 'Erorr Loading Wallet'

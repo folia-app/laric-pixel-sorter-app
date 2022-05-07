@@ -97,7 +97,7 @@ export default {
           // filter data
           asset = {
             name: asset.name,
-            collectionName: asset.collection.name.includes('Folia') ? 'Emoji Script' : asset.collection.name,
+            collectionName: asset.collection.name === 'Folia' ? 'Emoji Script' : asset.collection.name,
             image: { preview: asset.image_preview_url }
             // permalink: asset.permalink
           }

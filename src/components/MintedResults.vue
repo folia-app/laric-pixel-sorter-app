@@ -9,7 +9,7 @@
 
         //- mints...
         template(v-for="(mint, i) in mintsFiltered")
-          mint-thumb.mt-32(:mint="mint")
+          mint-thumb.mt-32.text-xs.md_text-md(:mint="mint")
 
         //- DEMO ITEMS
 

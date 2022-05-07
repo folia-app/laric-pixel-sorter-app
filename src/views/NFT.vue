@@ -89,7 +89,7 @@
           .grid.grid-cols-4.items-end
             //- mints...
             template(v-for="mint in relatedAssets")
-              mint-thumb.mt-16(:mint="mint")
+              mint-thumb.mt-16.text-xxs(:mint="mint")
               //- router-link.relative.group.block.mt-16(:to="'/tokens/' + mint.newTokenId")
                 mint-image(:mint="mint")
 

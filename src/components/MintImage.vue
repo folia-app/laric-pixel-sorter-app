@@ -19,7 +19,7 @@
 
     //- (loading overlay text)
     template(v-if="outputLoaded === false")
-      .absolute.overlay.flex.items-center.justify-center.animate-pulse.text-white.text-md
+      .absolute.overlay.flex.items-center.justify-center.animate-pulse.text-white
         .py-1.pl-3.pr-2.bg-blackff(:style="{ color: inputLoaded === false ? 'black': 'white', textShadow: inputLoaded ? '0 1px 1px rgba(0,0,0,0.75)' : 'none' }") Decomposing...
 </template>
 

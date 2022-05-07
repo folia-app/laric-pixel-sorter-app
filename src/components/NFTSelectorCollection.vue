@@ -6,8 +6,8 @@
 
       .md_absolute.top-0.right-0.h-full.flex.items-center.text-xs
         .mr-5.opacity-50
-          //- template(v-if="editionsLeft === undefined") .../88
-          //- template(v-else) {{ 88 - editionsLeft }}/88 #[span.hidden.sm_inline Mints]
+          template(v-if="editionsLeft === undefined") .../88
+          template(v-else) {{ 88 - editionsLeft }}/88 #[span.hidden.sm_inline Mints]
           //- | max 88
         svg-chevron-down.mr-8.h-8.w-8.transform(strokeWidth="1")
 
@@ -56,10 +56,23 @@ export default {
     },
     assetsFiltered () {
       let assets = this.collection.assets || []
+      // filter folia's
       if (this.collection.name === 'Folia') {
         assets = assets.filter(asset => {
           const id = Number(asset.tokenId)
           return id >= 2000000 && id <= 2000500
+        })
+      }
+      // filter artblocks curated
+      if (this.collection.address === '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270') {
+        assets = assets.filter(asset => {
+          const id = Number(asset.tokenId)
+          const isFidenza = id >= 78000000 && id < 79000000
+          const isEndlessNameless = id >= 120000000 && id < 130000000
+          const isApparitions = id >= 28000000 && id < 29000000
+          const isArchetype = id >= 23000000 && id < 24000000
+          const isFragments = id >= 159000000 && id < 160000000
+          return isFidenza || isEndlessNameless || isApparitions || isArchetype || isFragments
         })
       }
       return assets

@@ -455,7 +455,7 @@ export default new Vuex.Store({
       try {
         if (!state.controllerContract) await dispatch('init')
         const resp = await state.controllerContract.aC(contract)
-        return resp.editionsLeft ?? -1
+        return resp?.editionsLeft?.toString() ?? -1
       } catch (e) {
         console.error(e)
       }

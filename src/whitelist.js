@@ -40,6 +40,7 @@ export default [
   // ['eBoy Blockbob', 'https://opensea.io/collection/eboy-blockbob'],
 
   ['Emoji Script by Travess Smalley', 'https://folia.app/works/2', '0xDCe09254dD3592381b6A5b7a848B29890b656e01', '0x95793c65c398D0a5EEb92d6b475f4E6a2044Bee1'],
+  ['Endless Nameless by Rafaël Rozendaal', 'https://opensea.io/collection/endless-nameless-by-rafael-rozendaal', '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270'],
 
   // ['EtherRock'],
   // ['ETH Pixels', 'https://opensea.io/collection/ethpixels'],
@@ -76,6 +77,7 @@ export default [
   ['Realiti', 'https://opensea.io/collection/realitic', '0x29b7315fc83172CFcb45c2Fb415E91A265fb73f2'],
   ['Rebel Society', 'https://opensea.io/collection/rebelsociety', '0x8CD3cEA52a45f30Ed7c93a63FB2b5C13B453d5A1'],
   ['SupDucks', 'https://opensea.io/collection/supducks', '0x3Fe1a4c1481c8351E91B64D5c398b159dE07cbc5'],
+  ['SCAMMER MARKET', 'https://opensea.io/collection/scammer-market', '0x4e2a87743368484ed798033e8fdc7cae442064b8'],
   ['The Doge Pound', 'https://opensea.io/collection/the-doge-pound', '0xF4ee95274741437636e748DdAc70818B4ED7d043'],
   ['The Sandbox', 'https://opensea.io/collection/sandbox', '0x5CC5B05a8A13E3fBDB0BB9FcCd98D38e50F90c38'],
   ['THE SHIBOSHIS', 'https://opensea.io/collection/theshiboshis', '0x11450058d796B02EB53e65374be59cFf65d3FE7f'],

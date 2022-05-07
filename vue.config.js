@@ -12,6 +12,11 @@ module.exports = {
       '/api/4/': {
         target: 'http://164.92.233.6:3001', // /get/0x95793c65c398d0a5eeb92d6b475f4e6a2044bee1/8000020'
         pathRewrite: { '^/api/4/': '' }
+      },
+
+      '/api/1/': {
+        target: 'http://164.92.233.6', // /get/0x95793c65c398d0a5eeb92d6b475f4e6a2044bee1/8000020'
+        pathRewrite: { '^/api/1/': '' }
       }
 
       // 'metadata/1/': {}

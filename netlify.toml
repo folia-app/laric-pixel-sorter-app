@@ -1,23 +1,28 @@
 [build]
   functions = "functions"
 
-# proxy rinkeby server media
+# rinkeby: port 3001
+# mainnet: no port
+
+# proxy server media
 [[redirects]]
   from = "/gif/*"
-  to = "http://164.92.233.6:3001/gif/:splat"
+  to = "http://164.92.233.6/gif/:splat"
   status = 200
 
-# proxy rinkeby server media
+# proxy server media
 [[redirects]]
   from = "/get/*"
-  to = "http://164.92.233.6:3001/get/:splat"
+  to = "http://164.92.233.6/get/:splat"
   status = 200
 
-# proxy rinkeby server media
+# proxy server media
 [[redirects]]
   from = "/stylesheets/*"
-  to = "http://164.92.233.6:3001/stylesheets/:splat"
+  to = "http://164.92.233.6/stylesheets/:splat"
   status = 200
+
+
 
 # mainnent server proxy (no port)
   [[redirects]]
@@ -34,7 +39,7 @@
 # rinkeby tokenURI proxy
 [[redirects]]
   from = "/v1/metadata/*"
-  to = "http://164.92.233.6:3001/v1/metadata/:splat"
+  to = "http://164.92.233.6/v1/metadata/:splat"
   status = 200
 
 [[redirects]]

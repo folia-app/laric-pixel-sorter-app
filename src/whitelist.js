@@ -15,6 +15,7 @@ export default [
   ['Bored Ape Kennel Club', 'https://opensea.io/collection/bored-ape-kennel-club', '0xba30E5F9Bb24caa003E9f2f0497Ad287FDF95623'],
   ['Bored Ape Yacht Club', 'https://opensea.io/collection/boredapeyachtclub', '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D'],
   ['Capsule House', 'https://opensea.io/collection/capsulehouse', '0xfcB1315C4273954F74Cb16D5b663DBF479EEC62e'],
+  ['Channel-S0', 'https://opensea.io/collection/channel-s0', '0xa8f9b843c449c5d93a58400f8586599b8f336dbb'],
   ['Chromie Squiggle by Snowfro', 'https://opensea.io/collection/chromie-squiggle-by-snowfro', '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a'],
   ['CLASSIFIED | Holly Herndon', 'https://opensea.io/collection/classified-hollyherndon', '0x91Fba69Ce5071Cf9e828999a0F6006A7F7E2a959'],
   ['CLONE X - X TAKASHI MURAKAMI', 'https://opensea.io/collection/clonex', '0x49cF6f5d44E70224e2E23fDcdd2C053F30aDA28B'],

@@ -368,7 +368,10 @@ export default new Vuex.Store({
         const fromBlock = await dispatch('getControllerDeployBlock')
 
         // get events...
+        // console.time('getEvents')
         const mintEvents = await state.controllerContract.queryFilter('editionBought', fromBlock)
+        // console.log({ mintEvents })
+        // console.timeEnd('getEvents')
         // console.log({ mintEvents })
 
         return mintEvents

@@ -4,7 +4,7 @@
     .flex.w-full
       //- main
       .flex-1.relative.h-screen.overflow-y-scroll.scrollbars-hidden.transition.duration-500
-        .w-full.grid.grid-cols-2
+        .w-full.grid.grid-cols-1.md_grid-cols-2
           //- left col
           figure.w-full
             mint-image.w-full(:mint="mint")
@@ -22,7 +22,10 @@
                 img.absolute.overlay.group-hover_animate-pulse2ff(:src="`/api/${$store.state.networkId}/get/original/${mint.contractAddress}/${mint.tokenId}`")
 
           //- right col
-          section.flex.flex-col.bg-gray-50
+          section.order-first.md_order-none.flex.flex-col.bg-gray-50
+            .md_hidden.-mb-4.relative.z-10
+              router-link.w-20.h-20.pr-1.flex.items-center.justify-center.mouse_hover_bg-black-a08(to="/") &larr;
+
             header.p-8.text-gray-400.leading-normal
               .flex.justify-between
                 //- name
@@ -63,9 +66,16 @@
                 div rows: 144
                 div density: 10
                 div ...
+
             .flex-1
-            footer.flex.justify-end.p-8.text-xxs.text-gray-300
-              a.hover_text-black(:href="$store.getters.openSeaLink({ token: $route.params.token })", target="_blank", rel="noopener noreferrer") OpenSea ↗
+
+            //- external links
+            footer.flex.justify-end.px-8.pt-4.pb-6.md_pb-8.text-xxs.text-gray-300
+              //- (looks rare)
+              template(v-if="$store.state.nftContract")
+                a.hover_text-black(:href="`https://${ $store.state.networkId === 4 ? 'rinkeby.': ''}looksrare.org/collections/${$store.state.nftContract.address}`", target="_blank", rel="noopener noreferrer") LooksRare ↗
+              //- opensea
+              a.hover_text-black.ml-5(:href="$store.getters.openSeaLink({ token: $route.params.token })", target="_blank", rel="noopener noreferrer") OpenSea ↗
 
         //- (related assets)
         footer(v-if="relatedAssets.length > 0")

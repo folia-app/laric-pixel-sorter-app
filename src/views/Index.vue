@@ -288,8 +288,11 @@ export default {
 
   metaInfo () {
     if (this.$route.name !== 'token') {
-      console.log('prerender ready')
-      window.prerenderReady = true
+      setTimeout(() => {
+        // console.log('prerender ready', document.querySelector('meta[property="og:image"]'))
+        window.prerenderReady = true
+      }, 100)
+
       return {
         meta: this.$store.getters.meta({})
       }

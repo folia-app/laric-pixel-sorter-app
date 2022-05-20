@@ -118,7 +118,7 @@
               | Discord &nbsp;↗
 
             a.text-sm.uppercase.h-24.w-1x2.flex.items-center.justify-center.bg-gray-300.mouse_hover_bg-gray-400(href="https://snapshot.org/#/decomposer.eth", target="_blank", rel="noopener noreferrer")
-              | Snapshot &nbsp;↗
+              | DAO/Snapshot &nbsp;↗
 
           //- close btn
           button.absolute.top-0.right-0.w-20.h-20.flex.items-center.justify-center.bg-black-a08(@click.stop="closeInfoOverlay")

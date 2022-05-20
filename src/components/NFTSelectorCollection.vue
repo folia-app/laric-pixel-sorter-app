@@ -72,7 +72,10 @@ export default {
           const isApparitions = id >= 28000000 && id < 29000000
           const isArchetype = id >= 23000000 && id < 24000000
           const isFragments = id >= 159000000 && id < 160000000
-          return isFidenza || isEndlessNameless || isApparitions || isArchetype || isFragments
+          const isNeophyte = id >= 279000000 && id < 280000000
+          const isWindow = id >= 280000000 && id < 281000000
+          const isCryptoCitizen = id >= 189000000 && id < 190000000
+          return isFidenza || isEndlessNameless || isApparitions || isArchetype || isFragments || isNeophyte || isWindow || isCryptoCitizen
         })
       }
       return assets

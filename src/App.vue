@@ -27,7 +27,7 @@ export default {
   computed: {
     isWrongNetwork () {
       const id = this.$store.state.networkId
-      return id && (id !== Number(this.$store.state.appNetworkId))
+      return id && (id !== Number(this.$store.state.appNetworkId)) && process.env.NODE_ENV !== 'development'
     }
   },
   methods: {

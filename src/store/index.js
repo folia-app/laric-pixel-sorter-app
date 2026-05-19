@@ -229,14 +229,11 @@ export default new Vuex.Store({
 
     async setupFallbackProvider ({ dispatch }) {
       try {
-        if (window.ethereum) {
-          // metamask/browser
-          provider = new ethers.providers.Web3Provider(window.ethereum)
-        } else {
-          // infura fallback
-          console.log(appNetworkId)
-          provider = new ethers.getDefaultProvider(networks[appNetworkId].infura)
-        }
+        // Always use Infura for the read-only fallback provider. Using
+        // window.ethereum here causes the app to read whatever network
+        // MetaMask is currently on before the user connects, which triggers
+        // the wrong-network banner and breaks contract calls on unsupported chains.
+        provider = new ethers.getDefaultProvider(networks[appNetworkId].infura)
 
         await dispatch('getNetwork', provider)
 

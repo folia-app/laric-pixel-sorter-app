@@ -15,7 +15,7 @@ import assets from './assets' // connected wallet assets
 
 let provider, signer, walletProvider, initializing, web3
 
-const infuraProjectID = 'REDACTED_INFURA_KEY' // process.env.VUE_APP_INFURA_PROJECT_ID
+const infuraProjectID = process.env.VUE_APP_INFURA_PROJECT_ID
 
 const networks = {
   1: { name: 'mainnet', layer: 'ethereum', infura: `https://mainnet.infura.io/v3/${infuraProjectID}`, explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },

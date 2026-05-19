@@ -1,6 +1,9 @@
 [build]
   functions = "functions"
 
+[build.environment]
+  NODE_VERSION = "16"
+
 # rinkeby: port 3001
 # mainnet: no port
 

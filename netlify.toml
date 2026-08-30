@@ -10,19 +10,19 @@
 # proxy server media
 [[redirects]]
   from = "/gif/*"
-  to = "http://164.92.233.6/gif/:splat"
+  to = "https://folia-decomposer.fly.dev/gif/:splat"
   status = 200
 
 # proxy server media
 [[redirects]]
   from = "/get/*"
-  to = "http://164.92.233.6/get/:splat"
+  to = "https://folia-decomposer.fly.dev/get/:splat"
   status = 200
 
 # proxy server media
 [[redirects]]
   from = "/stylesheets/*"
-  to = "http://164.92.233.6/stylesheets/:splat"
+  to = "https://folia-decomposer.fly.dev/stylesheets/:splat"
   status = 200
 
 
@@ -30,19 +30,19 @@
 # mainnent server proxy (no port)
   [[redirects]]
     from = "/api/1/*"
-    to = "http://164.92.233.6/:splat"
+    to = "https://folia-decomposer.fly.dev/:splat"
     status = 200
 
 # rinkeby server proxy
 [[redirects]]
   from = "/api/4/*"
-  to = "http://164.92.233.6:3001/:splat"
+  to = "https://folia-decomposer.fly.dev/:splat"
   status = 200
 
 # rinkeby tokenURI proxy
 [[redirects]]
   from = "/v1/metadata/*"
-  to = "http://164.92.233.6/v1/metadata/:splat"
+  to = "https://folia-decomposer.fly.dev/v1/metadata/:splat"
   status = 200
 
 [[redirects]]

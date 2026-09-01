@@ -6,6 +6,7 @@ import Controller from '../../contracts/Controller'
 import whitelist from '@/whitelist'
 // ethers
 import { ethers } from 'ethers'
+import { readProvider as poolReadProvider, RPCS } from './rpc'
 // import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
@@ -15,11 +16,10 @@ import assets from './assets' // connected wallet assets
 
 let provider, signer, walletProvider, initializing, web3
 
-const infuraProjectID = process.env.VUE_APP_INFURA_PROJECT_ID
-
 const networks = {
-  1: { name: 'mainnet', layer: 'ethereum', infura: `https://mainnet.infura.io/v3/${infuraProjectID}`, explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
-  4: { name: 'rinkeby', layer: 'ethereum', infura: `https://rinkeby.infura.io/v3/${infuraProjectID}`, explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
+  // No rpc url here. Reads come from the redundant keyless pool in ./rpc.
+  1: { name: 'mainnet', layer: 'ethereum', explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
+  4: { name: 'rinkeby', layer: 'ethereum', explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
 }
 const appNetworkId = process.env.VUE_APP_FALLBACK_NETWORK_ID || 1
 
@@ -31,7 +31,8 @@ const web3Modal = new Web3Modal({
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: infuraProjectID // required
+        // an rpc map instead of an infuraId keeps this off a keyed provider
+        rpc: { 1: RPCS[0] }
       }
     }
   }
@@ -233,7 +234,7 @@ export default new Vuex.Store({
         // window.ethereum here causes the app to read whatever network
         // MetaMask is currently on before the user connects, which triggers
         // the wrong-network banner and breaks contract calls on unsupported chains.
-        provider = new ethers.getDefaultProvider(networks[appNetworkId].infura)
+        provider = poolReadProvider()
 
         await dispatch('getNetwork', provider)
 

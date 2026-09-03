@@ -6,7 +6,7 @@ import Controller from '../../contracts/Controller'
 import whitelist from '@/whitelist'
 // ethers
 import { ethers } from 'ethers'
-import { readProvider as poolReadProvider, RPCS } from './rpc'
+import { readProvider as poolReadProvider, getAllLogs, RPCS } from './rpc'
 // import Web3 from 'web3'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
@@ -367,7 +367,14 @@ export default new Vuex.Store({
 
         // get events...
         // console.time('getEvents')
-        const mintEvents = await state.controllerContract.queryFilter('editionBought', fromBlock)
+        // Through getAllLogs, not the contract's own provider. The contract is
+        // built on the read pool, which deliberately keeps Tenderly last so
+        // ordinary calls do not spend it -- but that ordering is wrong for a
+        // whole-history log scan, where Tenderly is the only endpoint that will
+        // serve the range. drpc was answering first with
+        // "ranges over 10000 blocks are not supported on free plan".
+        const { logs: mintEvents } = await getAllLogs(
+          state.controllerContract.address, Controller.abi, 'editionBought', fromBlock)
         // console.log({ mintEvents })
         // console.timeEnd('getEvents')
         // console.log({ mintEvents })
@@ -422,7 +429,10 @@ export default new Vuex.Store({
         const fromBlock = await dispatch('getControllerDeployBlock')
 
         // fetch all events
-        const events = await state.controllerContract.queryFilter('newContract', fromBlock)
+        // See getMintedEvents: whole-history scans go through getAllLogs so they
+        // reach an endpoint that will serve the range.
+        const { logs: events } = await getAllLogs(
+          state.controllerContract.address, Controller.abi, 'newContract', fromBlock)
         // console.log({ newContractEvents: events.map(e => e.args[0]).filter(addr => addr.toLowerCase() === '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a'.toLowerCase()) })
         // TODO factor REMOVE CONTRACT?
 

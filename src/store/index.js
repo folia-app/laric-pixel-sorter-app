@@ -18,7 +18,17 @@ let provider, signer, walletProvider, initializing, web3
 
 const networks = {
   // No rpc url here. Reads come from the redundant keyless pool in ./rpc.
-  1: { name: 'mainnet', layer: 'ethereum', explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
+  //
+  // controllerDeployBlock is recorded rather than looked up. getControllerDeployBlock
+  // otherwise resolves it with provider.getTransaction on every load, which is a
+  // network call to learn a constant -- and when it fails it returns null, so the
+  // log scan starts from an unknown block and its cache key never matches. During
+  // the Tenderly outage on 8 September that is what actually emptied the grid: not
+  // the scan, but the lookup in front of it.
+  //
+  // 14662312 is the block of the DecomposerController deploy tx
+  // 0x7d4edaf381e5331bf5c0468e037ce904dd73d08def432b3a9e667c423dc7d4bb.
+  1: { name: 'mainnet', layer: 'ethereum', controllerDeployBlock: 14662312, explorer: { name: 'Etherscan', domain: 'https://etherscan.io' } },
   4: { name: 'rinkeby', layer: 'ethereum', explorer: { name: 'Etherscan', domain: 'https://rinkeby.etherscan.io' } }
 }
 const appNetworkId = process.env.VUE_APP_FALLBACK_NETWORK_ID || 1

@@ -167,7 +167,29 @@ const isRateLimit = (e) => {
   return m.includes('429') || m.includes('rate limit') || m.includes('too many requests')
 }
 
-const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms))
+const sleepMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/**
+ * Give up on an endpoint rather than wait for it.
+ *
+ * Each attempt below builds its own PooledProvider, which retries with backoff,
+ * on top of ethers' own network detection -- so a host that hangs or refuses the
+ * connection outright can hold the whole scan for minutes. Exhausting the pool
+ * has to be quick, because the useful thing on the far side of it is the cache.
+ */
+function withTimeout (promise, ms, label) {
+  let timer
+  return Promise.race([
+    promise.finally(() => clearTimeout(timer)),
+    new Promise((resolve, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    })
+  ])
+}
+
+// Generous enough for a real whole-history scan on a healthy endpoint, short
+// enough that six dead ones do not add up to a hung page.
+const SCAN_TIMEOUT_MS = 8000
 
 export const providers = () => urls().map((u) => new ethers.providers.JsonRpcProvider(u))
 
@@ -195,7 +217,67 @@ export async function anyOf (fn) {
  *
  * @returns {Promise<{logs: Array, via: string, mode: 'wide'}>}
  */
+/**
+ * The last successful whole-history scan, kept across reloads.
+ *
+ * Only Tenderly will serve a scan of this width -- drpc, mevblocker, publicnode
+ * and blastapi all cap eth_getLogs at about 10,000 blocks, and this contract's
+ * history is 11.3 million. So the pool is not really redundancy for this call:
+ * when Tenderly is down nothing answers, and on 8 September that emptied the
+ * grid on decomposer.folia.app for the duration of the outage.
+ *
+ * Chunking is not the answer either. 10,000-block windows over that range is
+ * 1,127 sequential requests, which is not a page load.
+ *
+ * So the fallback is the previous answer. This data barely moves -- 75
+ * collections and 232 mints in three and a half years -- which makes a slightly
+ * stale list a much better failure mode than an empty one. A fresh scan always
+ * wins when it succeeds; the cache is read only when every endpoint refused.
+ */
+const CACHE_PREFIX = 'folia.logscan.'
+
+// How long a scan is treated as current. Short enough that a new collection
+// appears the same session; long enough that a reload is not another full scan.
+const CACHE_FRESH_MS = 10 * 60 * 1000
+
+const cacheKey = (address, filterName, fromBlock) =>
+  `${CACHE_PREFIX}${String(address).toLowerCase()}.${filterName}.${fromBlock}`
+
+function readCache (key) {
+  try {
+    const raw = window.localStorage.getItem(key)
+    if (!raw) return null
+    const { at, logs } = JSON.parse(raw)
+    return Array.isArray(logs) ? { at, logs } : null
+  } catch (e) {
+    return null
+  }
+}
+
+function writeCache (key, logs) {
+  try {
+    // args is what every caller reads; stringified so BigNumbers survive JSON
+    window.localStorage.setItem(key, JSON.stringify({
+      at: Date.now(),
+      logs: logs.map((l) => ({ args: Array.from(l.args || []).map(String) }))
+    }))
+  } catch (e) {
+    // a full or unavailable localStorage must not break the page
+  }
+}
+
 export async function getAllLogs (address, abi, filterName, fromBlock = 0) {
+  const key = cacheKey(address, filterName, fromBlock)
+
+  // A recent scan is used as-is, without touching the network. This history
+  // gains a handful of entries a year, so re-deriving it on every page load buys
+  // nothing -- and it means a reload during an outage is instant rather than
+  // spending a minute exhausting endpoints before reaching the same answer.
+  const fresh = readCache(key)
+  if (fresh && Date.now() - fresh.at < CACHE_FRESH_MS) {
+    return { logs: fresh.logs, via: 'cache', mode: 'cached' }
+  }
+
   const errors = []
   for (const url of logUrls()) {
     const p = new PooledProvider([url], { concurrency: 2 })
@@ -206,7 +288,9 @@ export async function getAllLogs (address, abi, filterName, fromBlock = 0) {
     // retry here; only advance when this endpoint has actually refused.
     for (let i = 0; i < 4; i++) {
       try {
-        const logs = await c.queryFilter(c.filters[filterName](), fromBlock)
+        const logs = await withTimeout(
+          c.queryFilter(c.filters[filterName](), fromBlock), SCAN_TIMEOUT_MS, url)
+        writeCache(cacheKey(address, filterName, fromBlock), logs)
         return { logs, via: url, mode: 'wide' }
       } catch (e) {
         if (isRateLimit(e) && i < 3) {
@@ -217,6 +301,14 @@ export async function getAllLogs (address, abi, filterName, fromBlock = 0) {
         break
       }
     }
+  }
+  // Every endpoint refused. Rather than hand the caller nothing, return the last
+  // good answer if there is one, flagged so a caller that cares can tell.
+  const cached = readCache(cacheKey(address, filterName, fromBlock))
+  if (cached) {
+    console.warn('no endpoint served the full log range; using the cached scan from ' +
+      new Date(cached.at).toISOString() + ` (${cached.logs.length} logs)`)
+    return { logs: cached.logs, via: 'cache', mode: 'cached' }
   }
   throw new Error('no endpoint served the full log range — ' + errors.slice(0, 2).join(' | '))
 }
